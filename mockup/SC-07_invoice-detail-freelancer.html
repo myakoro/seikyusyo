@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>請求書詳細 - スマート受発注 mini</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="dashboard-layout">
+    <!-- サイドバー（フリーランス用） -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <h1>スマート受発注 mini</h1>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="SC-16_mypage.html" class="nav-item">
+          <span class="nav-icon">🏠</span>
+          マイページ
+        </a>
+        <a href="SC-10_freelancer-edit.html" class="nav-item">
+          <span class="nav-icon">👤</span>
+          登録情報編集
+        </a>
+      </nav>
+    </aside>
+
+    <!-- メインコンテンツ -->
+    <main class="main-content">
+      <header class="header">
+        <h2 class="header-title">請求書詳細</h2>
+        <div class="header-user">
+          <span class="user-name">田中 一郎</span>
+          <a href="SC-01_login.html" class="btn btn-outline btn-sm">ログアウト</a>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <!-- ヘッダー情報 -->
+        <div class="card">
+          <div class="flex justify-between items-center">
+            <div>
+              <h3 class="text-xl font-bold">請求書番号: 202412-0005</h3>
+              <p class="text-sm text-gray-500 mt-1">作成日: 2024/12/01</p>
+            </div>
+            <div>
+              <span class="badge badge-pending" style="font-size: 1rem; padding: 0.5rem 1rem;">承認待ち</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- アクションボタン（フリーランス向け） -->
+        <div class="card">
+          <div class="alert alert-info mb-4">
+            内容をご確認の上、問題がなければ「承認」を、修正が必要な場合は「差し戻し」をクリックしてください。
+          </div>
+          <div class="flex gap-2">
+            <button class="btn btn-success btn-lg" id="approve-btn">✓ 承認する</button>
+            <button class="btn btn-warning btn-lg" id="reject-btn">↩ 差し戻す</button>
+            <button class="btn btn-outline">📄 PDF出力</button>
+          </div>
+        </div>
+
+        <!-- 基本情報 -->
+        <div class="card">
+          <div class="invoice-section">
+            <h3 class="invoice-section-title">基本情報</h3>
+            <div class="form-row">
+              <div>
+                <p class="text-sm text-gray-500">請求締日</p>
+                <p class="font-medium">2024年11月30日</p>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500">支払予定日</p>
+                <p class="font-medium">2024年12月31日</p>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500">実支払日</p>
+                <p class="font-medium">-</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 発注者・受注者情報 -->
+        <div class="card">
+          <div class="invoice-section">
+            <h3 class="invoice-section-title">お支払先・支払元情報</h3>
+            <div class="party-info">
+              <div class="party-box">
+                <h4>お支払先（あなた）</h4>
+                <p>
+                  <strong>田中 一郎</strong><br>
+                  〒150-0001<br>
+                  東京都渋谷区神宮前1-2-3<br>
+                  TEL: 090-1234-5678<br>
+                  インボイス番号: T1234567890123
+                </p>
+              </div>
+              <div class="party-box">
+                <h4>支払元</h4>
+                <p>
+                  <strong>株式会社サンプル</strong><br>
+                  〒100-0001<br>
+                  東京都千代田区千代田1-1-1<br>
+                  TEL: 03-1234-5678
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 明細テーブル -->
+        <div class="card">
+          <div class="invoice-section">
+            <h3 class="invoice-section-title">明細</h3>
+            <div class="table-container">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>商品名・作業名</th>
+                    <th class="text-right">単価</th>
+                    <th class="text-center">個数</th>
+                    <th class="text-right">報酬率</th>
+                    <th class="text-center">消費税</th>
+                    <th class="text-right">税率</th>
+                    <th class="text-center">源泉税対象</th>
+                    <th class="text-right">金額（税別）</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Webサイト制作</td>
+                    <td class="text-right">¥100,000</td>
+                    <td class="text-center">1</td>
+                    <td class="text-right">100.0%</td>
+                    <td class="text-center">別</td>
+                    <td class="text-right">10.0%</td>
+                    <td class="text-center">○</td>
+                    <td class="text-right">¥100,000</td>
+                  </tr>
+                  <tr>
+                    <td>コンサルティング</td>
+                    <td class="text-right">¥50,000</td>
+                    <td class="text-center">1</td>
+                    <td class="text-right">100.0%</td>
+                    <td class="text-center">別</td>
+                    <td class="text-right">10.0%</td>
+                    <td class="text-center">○</td>
+                    <td class="text-right">¥50,000</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- 集計 -->
+            <div class="invoice-summary">
+              <table class="summary-table">
+                <tr>
+                  <td>小計（税別）</td>
+                  <td>¥150,000</td>
+                </tr>
+                <tr>
+                  <td>内、源泉税対象小計（税別）</td>
+                  <td>¥150,000</td>
+                </tr>
+                <tr>
+                  <td>合計（税込）</td>
+                  <td>¥165,000</td>
+                </tr>
+                <tr>
+                  <td>源泉所得税</td>
+                  <td>▲¥15,315</td>
+                </tr>
+                <tr class="total">
+                  <td>請求額（税込）</td>
+                  <td>¥149,685</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 備考 -->
+        <div class="card">
+          <div class="invoice-section">
+            <h3 class="invoice-section-title">備考</h3>
+            <p class="text-sm">11月分の作業費用です。</p>
+          </div>
+        </div>
+
+        <!-- ステータス履歴 -->
+        <div class="card">
+          <div class="invoice-section">
+            <h3 class="invoice-section-title">ステータス履歴</h3>
+            <div class="status-history">
+              <div class="history-item">
+                <div class="history-date">2024/12/01 10:30</div>
+                <div class="history-content">
+                  <div class="history-action">承認待ち に変更</div>
+                  <div class="history-user">山田 太郎（株式会社サンプル）</div>
+                </div>
+              </div>
+              <div class="history-item">
+                <div class="history-date">2024/12/01 10:00</div>
+                <div class="history-content">
+                  <div class="history-action">請求書を作成</div>
+                  <div class="history-user">山田 太郎（株式会社サンプル）</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 戻るボタン -->
+        <div class="mt-4">
+          <a href="SC-16_mypage.html" class="btn btn-secondary">← マイページに戻る</a>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- 差し戻しモーダル（非表示） -->
+  <div class="modal-overlay hidden" id="reject-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">差し戻し</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">差し戻し理由 <span class="required">*</span></label>
+          <textarea class="form-textarea" rows="4" placeholder="差し戻しの理由を入力してください（例：金額に誤りがあります）"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary">キャンセル</button>
+        <button class="btn btn-warning">差し戻す</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 承認確認モーダル（非表示） -->
+  <div class="modal-overlay hidden" id="approve-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">承認確認</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>この請求書を承認してよろしいですか？</p>
+        <p class="text-sm text-gray-500 mt-2">承認後は内容の変更ができなくなります。</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary">キャンセル</button>
+        <button class="btn btn-success">承認する</button>
+      </div>
+    </div>
+  </div>
+<script>
+  // 承認ボタン
+  document.getElementById('approve-btn').addEventListener('click', function() {
+    document.getElementById('approve-modal').classList.remove('hidden');
+  });
+
+  // 差し戻しボタン
+  document.getElementById('reject-btn').addEventListener('click', function() {
+    document.getElementById('reject-modal').classList.remove('hidden');
+  });
+
+  // モーダル閉じる（全てのキャンセル・閉じるボタン）
+  document.querySelectorAll('.modal-close, .modal-footer .btn-secondary').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.modal-overlay').forEach(function(modal) {
+        modal.classList.add('hidden');
+      });
+    });
+  });
+
+  // モーダル背景クリックで閉じる
+  document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) {
+        overlay.classList.add('hidden');
+      }
+    });
+  });
+</script>
+</body>
+</html>

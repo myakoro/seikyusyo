@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>フリーランス一覧 - スマート受発注 mini</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="dashboard-layout">
+    <!-- サイドバー -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <h1>スマート受発注 mini</h1>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="SC-03_dashboard.html" class="nav-item">
+          <span class="nav-icon">📊</span>
+          ダッシュボード
+        </a>
+        <div class="nav-section">
+          <div class="nav-section-title">請求書管理</div>
+        </div>
+        <a href="SC-04_invoice-list.html" class="nav-item">
+          <span class="nav-icon">📄</span>
+          請求書一覧
+        </a>
+        <a href="SC-05_invoice-new.html" class="nav-item">
+          <span class="nav-icon">➕</span>
+          請求書作成
+        </a>
+        <div class="nav-section">
+          <div class="nav-section-title">マスタ管理</div>
+        </div>
+        <a href="SC-08_freelancer-list.html" class="nav-item active">
+          <span class="nav-icon">👤</span>
+          フリーランス
+        </a>
+        <a href="SC-11_product-list.html" class="nav-item">
+          <span class="nav-icon">📦</span>
+          商品マスタ
+        </a>
+        <div class="nav-section">
+          <div class="nav-section-title">設定</div>
+        </div>
+        <a href="SC-14_settings-company.html" class="nav-item">
+          <span class="nav-icon">🏢</span>
+          自社情報
+        </a>
+        <a href="SC-15_settings-users.html" class="nav-item">
+          <span class="nav-icon">👥</span>
+          ユーザー管理
+        </a>
+      </nav>
+    </aside>
+
+    <!-- メインコンテンツ -->
+    <main class="main-content">
+      <header class="header">
+        <h2 class="header-title">フリーランス一覧</h2>
+        <div class="header-user">
+          <span class="user-name">山田 太郎</span>
+          <a href="SC-01_login.html" class="btn btn-outline btn-sm">ログアウト</a>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <!-- アクションバー -->
+        <div class="action-bar">
+          <div class="action-bar-left">
+            <a href="SC-09_freelancer-new.html" class="btn btn-primary">➕ 新規登録</a>
+          </div>
+        </div>
+
+        <!-- 検索フォーム -->
+        <div class="card">
+          <div class="search-form">
+            <div class="form-group">
+              <label class="form-label">氏名</label>
+              <input type="text" class="form-input" placeholder="氏名で検索">
+            </div>
+            <div class="form-group">
+              <label class="form-label">メールアドレス</label>
+              <input type="text" class="form-input" placeholder="メールで検索">
+            </div>
+            <div class="form-group">
+              <label class="form-label">ステータス</label>
+              <select class="form-select">
+                <option value="">すべて</option>
+                <option value="active">有効</option>
+                <option value="inactive">無効</option>
+              </select>
+            </div>
+            <div class="search-actions">
+              <button class="btn btn-primary">検索</button>
+              <button class="btn btn-secondary">クリア</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 一覧テーブル -->
+        <div class="card">
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>氏名</th>
+                  <th>メールアドレス</th>
+                  <th>電話番号</th>
+                  <th>ステータス</th>
+                  <th>登録日</th>
+                  <th class="text-center">アクション</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><a href="SC-10_freelancer-edit.html">田中 一郎</a></td>
+                  <td>tanaka@example.com</td>
+                  <td>090-1234-5678</td>
+                  <td><span class="badge badge-active">有効</span></td>
+                  <td>2024/10/01</td>
+                  <td class="text-center">
+                    <a href="SC-10_freelancer-edit.html" class="btn btn-outline btn-sm">編集</a>
+                    <a href="SC-11_product-list.html?freelancerId=1" class="btn btn-outline btn-sm">商品管理</a>
+                    <a href="SC-05_invoice-new.html?freelancerId=1" class="btn btn-primary btn-sm">請求書作成</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a href="SC-10_freelancer-edit.html">佐藤 花子</a></td>
+                  <td>sato@example.com</td>
+                  <td>080-2345-6789</td>
+                  <td><span class="badge badge-active">有効</span></td>
+                  <td>2024/09/15</td>
+                  <td class="text-center">
+                    <a href="SC-10_freelancer-edit.html" class="btn btn-outline btn-sm">編集</a>
+                    <a href="SC-11_product-list.html?freelancerId=2" class="btn btn-outline btn-sm">商品管理</a>
+                    <a href="SC-05_invoice-new.html?freelancerId=2" class="btn btn-primary btn-sm">請求書作成</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a href="SC-10_freelancer-edit.html">鈴木 次郎</a></td>
+                  <td>suzuki@example.com</td>
+                  <td>070-3456-7890</td>
+                  <td><span class="badge badge-active">有効</span></td>
+                  <td>2024/08/20</td>
+                  <td class="text-center">
+                    <a href="SC-10_freelancer-edit.html" class="btn btn-outline btn-sm">編集</a>
+                    <a href="SC-11_product-list.html?freelancerId=3" class="btn btn-outline btn-sm">商品管理</a>
+                    <a href="SC-05_invoice-new.html?freelancerId=3" class="btn btn-primary btn-sm">請求書作成</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a href="SC-10_freelancer-edit.html">高橋 美咲</a></td>
+                  <td>takahashi@example.com</td>
+                  <td>090-4567-8901</td>
+                  <td><span class="badge badge-inactive">無効</span></td>
+                  <td>2024/07/10</td>
+                  <td class="text-center">
+                    <a href="SC-10_freelancer-edit.html" class="btn btn-outline btn-sm">編集</a>
+                    <a href="SC-11_product-list.html?freelancerId=4" class="btn btn-outline btn-sm">商品管理</a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- ページネーション -->
+          <div class="pagination">
+            <button class="pagination-btn" disabled>← 前へ</button>
+            <button class="pagination-btn active">1</button>
+            <button class="pagination-btn">次へ →</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

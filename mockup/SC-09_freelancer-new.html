@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>フリーランス登録 - スマート受発注 mini</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="dashboard-layout">
+    <!-- サイドバー -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <h1>スマート受発注 mini</h1>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="SC-03_dashboard.html" class="nav-item">
+          <span class="nav-icon">📊</span>
+          ダッシュボード
+        </a>
+        <div class="nav-section">
+          <div class="nav-section-title">請求書管理</div>
+        </div>
+        <a href="SC-04_invoice-list.html" class="nav-item">
+          <span class="nav-icon">📄</span>
+          請求書一覧
+        </a>
+        <a href="SC-05_invoice-new.html" class="nav-item">
+          <span class="nav-icon">➕</span>
+          請求書作成
+        </a>
+        <div class="nav-section">
+          <div class="nav-section-title">マスタ管理</div>
+        </div>
+        <a href="SC-08_freelancer-list.html" class="nav-item active">
+          <span class="nav-icon">👤</span>
+          フリーランス
+        </a>
+        <a href="SC-11_product-list.html" class="nav-item">
+          <span class="nav-icon">📦</span>
+          商品マスタ
+        </a>
+        <div class="nav-section">
+          <div class="nav-section-title">設定</div>
+        </div>
+        <a href="SC-14_settings-company.html" class="nav-item">
+          <span class="nav-icon">🏢</span>
+          自社情報
+        </a>
+        <a href="SC-15_settings-users.html" class="nav-item">
+          <span class="nav-icon">👥</span>
+          ユーザー管理
+        </a>
+      </nav>
+    </aside>
+
+    <!-- メインコンテンツ -->
+    <main class="main-content">
+      <header class="header">
+        <h2 class="header-title">フリーランス登録</h2>
+        <div class="header-user">
+          <span class="user-name">山田 太郎</span>
+          <a href="SC-01_login.html" class="btn btn-outline btn-sm">ログアウト</a>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <form>
+          <!-- 基本情報 -->
+          <div class="card">
+            <div class="invoice-section">
+              <h3 class="invoice-section-title">基本情報</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">氏名 <span class="required">*</span></label>
+                  <input type="text" class="form-input" placeholder="例: 田中 一郎">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">氏名カナ</label>
+                  <input type="text" class="form-input" placeholder="例: タナカ イチロウ">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">メールアドレス <span class="required">*</span></label>
+                  <input type="email" class="form-input" placeholder="例: tanaka@example.com">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">電話番号</label>
+                  <input type="tel" class="form-input" placeholder="例: 090-1234-5678">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">郵便番号</label>
+                  <input type="text" class="form-input" placeholder="例: 1500001" style="width: 150px;">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">住所</label>
+                <textarea class="form-textarea" rows="2" placeholder="例: 東京都渋谷区神宮前1-2-3"></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">インボイス番号</label>
+                <input type="text" class="form-input" placeholder="例: T1234567890123" style="width: 250px;">
+              </div>
+            </div>
+          </div>
+
+          <!-- 振込先情報 -->
+          <div class="card">
+            <div class="invoice-section">
+              <h3 class="invoice-section-title">振込先情報</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">銀行名</label>
+                  <input type="text" class="form-input" placeholder="例: 三菱UFJ銀行">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">支店名</label>
+                  <input type="text" class="form-input" placeholder="例: 渋谷支店">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">口座種別</label>
+                  <select class="form-select" style="width: 150px;">
+                    <option value="">選択してください</option>
+                    <option value="ordinary">普通</option>
+                    <option value="current">当座</option>
+                    <option value="savings">貯蓄</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">口座番号</label>
+                  <input type="text" class="form-input" placeholder="例: 1234567" style="width: 150px;">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">口座名義</label>
+                <input type="text" class="form-input" placeholder="例: タナカ イチロウ">
+              </div>
+            </div>
+          </div>
+
+          <!-- その他設定 -->
+          <div class="card">
+            <div class="invoice-section">
+              <h3 class="invoice-section-title">その他設定</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-checkbox">
+                    <input type="checkbox" checked>
+                    <span>源泉税対象（デフォルト）</span>
+                  </label>
+                  <p class="text-xs text-gray-500 mt-1">商品登録時のデフォルト値として使用されます</p>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">ステータス <span class="required">*</span></label>
+                  <select class="form-select" style="width: 150px;">
+                    <option value="active" selected>有効</option>
+                    <option value="inactive">無効</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- アクションボタン -->
+          <div class="card">
+            <div class="flex justify-between">
+              <a href="SC-08_freelancer-list.html" class="btn btn-secondary">キャンセル</a>
+              <button type="submit" class="btn btn-primary">登録</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </main>
+  </div>
+
+  <!-- 登録完了モーダル（非表示） -->
+  <div class="modal-overlay hidden" id="invite-modal">
+    <div class="modal" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3 class="modal-title">登録完了 - 招待情報</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-success mb-4">
+          フリーランスを登録しました。以下の情報をコピーして、メールやチャットで送信してください。
+        </div>
+        <div style="background: #f9fafb; padding: 1rem; border-radius: 0.375rem; font-family: monospace; font-size: 0.875rem; white-space: pre-wrap;">【システム招待のご案内】
+
+田中 一郎 様
+
+お世話になっております。
+請求書管理システムへのアクセス情報をお送りいたします。
+
+以下のURLからログインし、パスワードを変更してください。
+招待URL: https://smart-order-mini.onrender.com/login
+ユーザーID: tanaka@example.com
+仮パスワード: Abc123!@#
+
+ログイン後、ご自身の詳細情報（住所、振込先等）を編集・補完してください。
+
+よろしくお願いいたします。</div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline">コピー</button>
+        <a href="SC-08_freelancer-list.html" class="btn btn-primary">一覧に戻る</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

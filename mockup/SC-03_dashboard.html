@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ダッシュボード - スマート受発注 mini</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="dashboard-layout">
+    <!-- サイドバー -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <h1>スマート受発注 mini</h1>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="SC-03_dashboard.html" class="nav-item active">
+          <span class="nav-icon">📊</span>
+          ダッシュボード
+        </a>
+        <div class="nav-section">
+          <div class="nav-section-title">請求書管理</div>
+        </div>
+        <a href="SC-04_invoice-list.html" class="nav-item">
+          <span class="nav-icon">📄</span>
+          請求書一覧
+        </a>
+        <a href="SC-05_invoice-new.html" class="nav-item">
+          <span class="nav-icon">➕</span>
+          請求書作成
+        </a>
+        <div class="nav-section">
+          <div class="nav-section-title">マスタ管理</div>
+        </div>
+        <a href="SC-08_freelancer-list.html" class="nav-item">
+          <span class="nav-icon">👤</span>
+          フリーランス
+        </a>
+        <a href="SC-11_product-list.html" class="nav-item">
+          <span class="nav-icon">📦</span>
+          商品マスタ
+        </a>
+        <div class="nav-section">
+          <div class="nav-section-title">設定</div>
+        </div>
+        <a href="SC-14_settings-company.html" class="nav-item">
+          <span class="nav-icon">🏢</span>
+          自社情報
+        </a>
+        <a href="SC-15_settings-users.html" class="nav-item">
+          <span class="nav-icon">👥</span>
+          ユーザー管理
+        </a>
+      </nav>
+    </aside>
+
+    <!-- メインコンテンツ -->
+    <main class="main-content">
+      <header class="header">
+        <h2 class="header-title">ダッシュボード</h2>
+        <div class="header-user">
+          <span class="user-name">山田 太郎</span>
+          <a href="SC-01_login.html" class="btn btn-outline btn-sm">ログアウト</a>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <!-- サマリーカード -->
+        <div class="summary-cards">
+          <div class="summary-card">
+            <div class="summary-card-title">今月の請求書件数</div>
+            <div class="summary-card-value">12<span class="text-lg">件</span></div>
+            <div class="summary-card-sub">
+              <span class="badge badge-draft">下書き 3</span>
+              <span class="badge badge-pending">承認待ち 5</span>
+              <span class="badge badge-approved">承認済 4</span>
+            </div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-card-title">今月の請求額合計</div>
+            <div class="summary-card-value">¥1,234,567</div>
+            <div class="summary-card-sub">承認済・支払済の合計</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-card-title">支払予定件数</div>
+            <div class="summary-card-value">8<span class="text-lg">件</span></div>
+            <div class="summary-card-sub">今月末までに支払予定</div>
+          </div>
+        </div>
+
+        <!-- クイックアクション -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">クイックアクション</h3>
+          </div>
+          <div class="flex gap-4">
+            <a href="SC-05_invoice-new.html" class="btn btn-primary">
+              ➕ 新規請求書作成
+            </a>
+            <a href="SC-09_freelancer-new.html" class="btn btn-secondary">
+              👤 フリーランス登録
+            </a>
+          </div>
+        </div>
+
+        <!-- 最近の請求書 -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">最近の請求書</h3>
+            <a href="SC-04_invoice-list.html" class="btn btn-outline btn-sm">すべて見る →</a>
+          </div>
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>請求書番号</th>
+                  <th>フリーランス名</th>
+                  <th>請求締日</th>
+                  <th class="text-right">請求額</th>
+                  <th>ステータス</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><a href="SC-07_invoice-detail.html">202412-0005</a></td>
+                  <td>田中 一郎</td>
+                  <td>2024/11/30</td>
+                  <td class="text-right">¥150,000</td>
+                  <td><span class="badge badge-pending">承認待ち</span></td>
+                </tr>
+                <tr>
+                  <td><a href="SC-07_invoice-detail.html">202412-0004</a></td>
+                  <td>佐藤 花子</td>
+                  <td>2024/11/30</td>
+                  <td class="text-right">¥280,000</td>
+                  <td><span class="badge badge-approved">承認済</span></td>
+                </tr>
+                <tr>
+                  <td><a href="SC-07_invoice-detail.html">202412-0003</a></td>
+                  <td>鈴木 次郎</td>
+                  <td>2024/11/30</td>
+                  <td class="text-right">¥95,000</td>
+                  <td><span class="badge badge-draft">下書き</span></td>
+                </tr>
+                <tr>
+                  <td><a href="SC-07_invoice-detail.html">202412-0002</a></td>
+                  <td>高橋 美咲</td>
+                  <td>2024/11/30</td>
+                  <td class="text-right">¥320,000</td>
+                  <td><span class="badge badge-paid">支払済</span></td>
+                </tr>
+                <tr>
+                  <td><a href="SC-07_invoice-detail.html">202412-0001</a></td>
+                  <td>伊藤 健太</td>
+                  <td>2024/11/30</td>
+                  <td class="text-right">¥180,000</td>
+                  <td><span class="badge badge-rejected">差し戻し</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

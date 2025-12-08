@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>マイページ - スマート受発注 mini</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="dashboard-layout">
+    <!-- サイドバー（フリーランス用） -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <h1>スマート受発注 mini</h1>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="SC-16_mypage.html" class="nav-item active">
+          <span class="nav-icon">🏠</span>
+          マイページ
+        </a>
+        <a href="SC-10_freelancer-edit.html" class="nav-item">
+          <span class="nav-icon">👤</span>
+          登録情報編集
+        </a>
+      </nav>
+    </aside>
+
+    <!-- メインコンテンツ -->
+    <main class="main-content">
+      <header class="header">
+        <h2 class="header-title">マイページ</h2>
+        <div class="header-user">
+          <span class="user-name">田中 一郎</span>
+          <a href="SC-01_login.html" class="btn btn-outline btn-sm">ログアウト</a>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <!-- 自分の情報 -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">登録情報</h3>
+            <a href="SC-10_freelancer-edit.html" class="btn btn-outline btn-sm">編集</a>
+          </div>
+          <div class="form-row">
+            <div>
+              <p class="text-sm text-gray-500">氏名</p>
+              <p class="font-medium">田中 一郎</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500">メールアドレス</p>
+              <p class="font-medium">tanaka@example.com</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500">電話番号</p>
+              <p class="font-medium">090-1234-5678</p>
+            </div>
+          </div>
+          <div class="form-row mt-4">
+            <div>
+              <p class="text-sm text-gray-500">住所</p>
+              <p class="font-medium">〒150-0001 東京都渋谷区神宮前1-2-3</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500">インボイス番号</p>
+              <p class="font-medium">T1234567890123</p>
+            </div>
+          </div>
+          <div class="form-row mt-4">
+            <div>
+              <p class="text-sm text-gray-500">振込先</p>
+              <p class="font-medium">三菱UFJ銀行 渋谷支店 普通 1234567 タナカ イチロウ</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 請求書一覧 -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">請求書一覧</h3>
+          </div>
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>請求書番号</th>
+                  <th>請求締日</th>
+                  <th>支払予定日</th>
+                  <th class="text-right">請求額</th>
+                  <th>ステータス</th>
+                  <th class="text-center">アクション</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><a href="SC-07_invoice-detail-freelancer.html">202412-0005</a></td>
+                  <td>2024/11/30</td>
+                  <td>2024/12/31</td>
+                  <td class="text-right">¥149,685</td>
+                  <td><span class="badge badge-pending">承認待ち</span></td>
+                  <td class="text-center">
+                    <a href="SC-07_invoice-detail-freelancer.html" class="btn btn-outline btn-sm">詳細</a>
+                    <button class="btn btn-success btn-sm approve-btn">承認</button>
+                    <button class="btn btn-warning btn-sm reject-btn">差し戻し</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a href="SC-07_invoice-detail-freelancer.html">202411-0003</a></td>
+                  <td>2024/10/31</td>
+                  <td>2024/11/30</td>
+                  <td class="text-right">¥220,000</td>
+                  <td><span class="badge badge-paid">支払済</span></td>
+                  <td class="text-center">
+                    <a href="SC-07_invoice-detail-freelancer.html" class="btn btn-outline btn-sm">詳細</a>
+                    <button class="btn btn-outline btn-sm">PDF</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a href="SC-07_invoice-detail-freelancer.html">202410-0002</a></td>
+                  <td>2024/09/30</td>
+                  <td>2024/10/31</td>
+                  <td class="text-right">¥180,500</td>
+                  <td><span class="badge badge-paid">支払済</span></td>
+                  <td class="text-center">
+                    <a href="SC-07_invoice-detail-freelancer.html" class="btn btn-outline btn-sm">詳細</a>
+                    <button class="btn btn-outline btn-sm">PDF</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- 差し戻しモーダル（非表示） -->
+  <div class="modal-overlay hidden" id="reject-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">差し戻し</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">差し戻し理由 <span class="required">*</span></label>
+          <textarea class="form-textarea" rows="4" placeholder="差し戻しの理由を入力してください"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary">キャンセル</button>
+        <button class="btn btn-warning">差し戻す</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 承認確認モーダル（非表示） -->
+  <div class="modal-overlay hidden" id="approve-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">承認確認</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>この請求書を承認してよろしいですか？</p>
+        <p class="text-sm text-gray-500 mt-2">承認後は内容の変更ができなくなります。</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary">キャンセル</button>
+        <button class="btn btn-success">承認する</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // 承認ボタン（複数対応）
+  document.querySelectorAll('.approve-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.getElementById('approve-modal').classList.remove('hidden');
+    });
+  });
+
+  // 差し戻しボタン（複数対応）
+  document.querySelectorAll('.reject-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.getElementById('reject-modal').classList.remove('hidden');
+    });
+  });
+
+  // モーダル閉じる（全てのキャンセル・閉じるボタン）
+  document.querySelectorAll('.modal-close, .modal-footer .btn-secondary').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.modal-overlay').forEach(function(modal) {
+        modal.classList.add('hidden');
+      });
+    });
+  });
+
+  // モーダル背景クリックで閉じる
+  document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) {
+        overlay.classList.add('hidden');
+      }
+    });
+  });
+</script>
+</body>
+</html>

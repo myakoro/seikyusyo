@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>請求書編集 - スマート受発注 mini</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="dashboard-layout">
+    <!-- サイドバー -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <h1>スマート受発注 mini</h1>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="SC-03_dashboard.html" class="nav-item">
+          <span class="nav-icon">📊</span>
+          ダッシュボード
+        </a>
+        <div class="nav-section">
+          <div class="nav-section-title">請求書管理</div>
+        </div>
+        <a href="SC-04_invoice-list.html" class="nav-item active">
+          <span class="nav-icon">📄</span>
+          請求書一覧
+        </a>
+        <a href="SC-05_invoice-new.html" class="nav-item">
+          <span class="nav-icon">➕</span>
+          請求書作成
+        </a>
+        <div class="nav-section">
+          <div class="nav-section-title">マスタ管理</div>
+        </div>
+        <a href="SC-08_freelancer-list.html" class="nav-item">
+          <span class="nav-icon">👤</span>
+          フリーランス
+        </a>
+        <a href="SC-11_product-list.html" class="nav-item">
+          <span class="nav-icon">📦</span>
+          商品マスタ
+        </a>
+        <div class="nav-section">
+          <div class="nav-section-title">設定</div>
+        </div>
+        <a href="SC-14_settings-company.html" class="nav-item">
+          <span class="nav-icon">🏢</span>
+          自社情報
+        </a>
+        <a href="SC-15_settings-users.html" class="nav-item">
+          <span class="nav-icon">👥</span>
+          ユーザー管理
+        </a>
+      </nav>
+    </aside>
+
+    <!-- メインコンテンツ -->
+    <main class="main-content">
+      <header class="header">
+        <h2 class="header-title">請求書編集 - 202412-0003</h2>
+        <div class="header-user">
+          <span class="user-name">山田 太郎</span>
+          <a href="SC-01_login.html" class="btn btn-outline btn-sm">ログアウト</a>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <!-- ステータス表示 -->
+        <div class="alert alert-info mb-4">
+          現在のステータス: <span class="badge badge-draft">下書き</span>
+        </div>
+
+        <form>
+          <!-- 基本情報 -->
+          <div class="card">
+            <div class="invoice-section">
+              <h3 class="invoice-section-title">基本情報</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">フリーランス <span class="required">*</span></label>
+                  <select class="form-select">
+                    <option value="">選択してください</option>
+                    <option value="1">田中 一郎</option>
+                    <option value="2">佐藤 花子</option>
+                    <option value="3" selected>鈴木 次郎</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">請求締日 <span class="required">*</span></label>
+                  <input type="date" class="form-input" value="2024-11-30">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">支払予定日 <span class="required">*</span></label>
+                  <input type="date" class="form-input" value="2024-12-31">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 発注者・受注者情報 -->
+          <div class="card">
+            <div class="invoice-section">
+              <h3 class="invoice-section-title">お支払先・支払元情報</h3>
+              <div class="party-info">
+                <div class="party-box">
+                  <h4>お支払先</h4>
+                  <p>
+                    <strong>鈴木 次郎</strong><br>
+                    〒160-0022<br>
+                    東京都新宿区新宿3-4-5<br>
+                    TEL: 080-9876-5432<br>
+                    インボイス番号: T9876543210987
+                  </p>
+                </div>
+                <div class="party-box">
+                  <h4>支払元</h4>
+                  <p>
+                    <strong>株式会社サンプル</strong><br>
+                    〒100-0001<br>
+                    東京都千代田区千代田1-1-1<br>
+                    TEL: 03-1234-5678
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 明細テーブル -->
+          <div class="card">
+            <div class="invoice-section">
+              <h3 class="invoice-section-title">明細</h3>
+              <div class="table-container">
+                <table class="detail-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 200px;">商品名・作業名</th>
+                      <th style="width: 100px;">単価</th>
+                      <th style="width: 60px;">個数</th>
+                      <th style="width: 80px;">報酬率(%)</th>
+                      <th style="width: 70px;">消費税</th>
+                      <th style="width: 70px;">税率(%)</th>
+                      <th style="width: 80px;">源泉税対象</th>
+                      <th style="width: 120px;">金額（税別）</th>
+                      <th style="width: 50px;"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><input type="text" value="システム開発"></td>
+                      <td><input type="number" value="80000" style="text-align: right;"></td>
+                      <td><input type="number" value="1" style="text-align: center;"></td>
+                      <td><input type="number" value="100.0" step="0.1" style="text-align: right;"></td>
+                      <td>
+                        <select>
+                          <option value="exclusive" selected>別</option>
+                          <option value="inclusive">込</option>
+                        </select>
+                      </td>
+                      <td><input type="number" value="10.0" step="0.1" style="text-align: right;"></td>
+                      <td style="text-align: center;"><input type="checkbox" checked></td>
+                      <td class="amount">¥80,000</td>
+                      <td><button type="button" class="btn btn-danger btn-sm">×</button></td>
+                    </tr>
+                    <tr>
+                      <td><input type="text" value="保守作業"></td>
+                      <td><input type="number" value="15000" style="text-align: right;"></td>
+                      <td><input type="number" value="1" style="text-align: center;"></td>
+                      <td><input type="number" value="100.0" step="0.1" style="text-align: right;"></td>
+                      <td>
+                        <select>
+                          <option value="exclusive" selected>別</option>
+                          <option value="inclusive">込</option>
+                        </select>
+                      </td>
+                      <td><input type="number" value="10.0" step="0.1" style="text-align: right;"></td>
+                      <td style="text-align: center;"><input type="checkbox" checked></td>
+                      <td class="amount">¥15,000</td>
+                      <td><button type="button" class="btn btn-danger btn-sm">×</button></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="mt-4">
+                <button type="button" class="btn btn-secondary">➕ 明細行を追加</button>
+              </div>
+
+              <!-- 集計 -->
+              <div class="invoice-summary">
+                <table class="summary-table">
+                  <tr>
+                    <td>小計（税別）</td>
+                    <td>¥95,000</td>
+                  </tr>
+                  <tr>
+                    <td>内、源泉税対象小計（税別）</td>
+                    <td>¥95,000</td>
+                  </tr>
+                  <tr>
+                    <td>合計（税込）</td>
+                    <td>¥104,500</td>
+                  </tr>
+                  <tr>
+                    <td>源泉所得税</td>
+                    <td>▲¥9,699</td>
+                  </tr>
+                  <tr class="total">
+                    <td>請求額（税込）</td>
+                    <td>¥94,801</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- 備考 -->
+          <div class="card">
+            <div class="invoice-section">
+              <h3 class="invoice-section-title">備考</h3>
+              <div class="form-group">
+                <textarea class="form-textarea" rows="4">11月分の作業費用です。</textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- アクションボタン -->
+          <div class="card">
+            <div class="flex justify-between">
+              <a href="SC-07_invoice-detail.html" class="btn btn-secondary">キャンセル</a>
+              <div class="flex gap-2">
+                <button type="button" class="btn btn-outline">下書き保存</button>
+                <button type="submit" class="btn btn-primary">確定</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

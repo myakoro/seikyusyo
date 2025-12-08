@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ユーザー管理 - スマート受発注 mini</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="dashboard-layout">
+    <!-- サイドバー -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <h1>スマート受発注 mini</h1>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="SC-03_dashboard.html" class="nav-item">
+          <span class="nav-icon">📊</span>
+          ダッシュボード
+        </a>
+        <div class="nav-section">
+          <div class="nav-section-title">請求書管理</div>
+        </div>
+        <a href="SC-04_invoice-list.html" class="nav-item">
+          <span class="nav-icon">📄</span>
+          請求書一覧
+        </a>
+        <a href="SC-05_invoice-new.html" class="nav-item">
+          <span class="nav-icon">➕</span>
+          請求書作成
+        </a>
+        <div class="nav-section">
+          <div class="nav-section-title">マスタ管理</div>
+        </div>
+        <a href="SC-08_freelancer-list.html" class="nav-item">
+          <span class="nav-icon">👤</span>
+          フリーランス
+        </a>
+        <a href="SC-11_product-list.html" class="nav-item">
+          <span class="nav-icon">📦</span>
+          商品マスタ
+        </a>
+        <div class="nav-section">
+          <div class="nav-section-title">設定</div>
+        </div>
+        <a href="SC-14_settings-company.html" class="nav-item">
+          <span class="nav-icon">🏢</span>
+          自社情報
+        </a>
+        <a href="SC-15_settings-users.html" class="nav-item active">
+          <span class="nav-icon">👥</span>
+          ユーザー管理
+        </a>
+      </nav>
+    </aside>
+
+    <!-- メインコンテンツ -->
+    <main class="main-content">
+      <header class="header">
+        <h2 class="header-title">ユーザー管理</h2>
+        <div class="header-user">
+          <span class="user-name">山田 太郎</span>
+          <a href="SC-01_login.html" class="btn btn-outline btn-sm">ログアウト</a>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <!-- アクションバー -->
+        <div class="action-bar">
+          <div class="action-bar-left">
+            <button class="btn btn-primary" id="open-user-modal">➕ 新規登録</button>
+          </div>
+        </div>
+
+        <!-- 一覧テーブル -->
+        <div class="card">
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>ユーザー名</th>
+                  <th>メールアドレス</th>
+                  <th>ロール</th>
+                  <th>ステータス</th>
+                  <th>登録日</th>
+                  <th class="text-center">アクション</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>山田 太郎</td>
+                  <td>yamada@sample.co.jp</td>
+                  <td><span class="badge badge-approved">自社ユーザー</span></td>
+                  <td><span class="badge badge-active">有効</span></td>
+                  <td>2024/01/01</td>
+                  <td class="text-center">
+                    <button class="btn btn-outline btn-sm">編集</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>鈴木 花子</td>
+                  <td>suzuki@sample.co.jp</td>
+                  <td><span class="badge badge-approved">自社ユーザー</span></td>
+                  <td><span class="badge badge-active">有効</span></td>
+                  <td>2024/03/15</td>
+                  <td class="text-center">
+                    <button class="btn btn-outline btn-sm">編集</button>
+                    <button class="btn btn-danger btn-sm">無効化</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>佐藤 健一</td>
+                  <td>sato@sample.co.jp</td>
+                  <td><span class="badge badge-approved">自社ユーザー</span></td>
+                  <td><span class="badge badge-pending">招待中</span></td>
+                  <td>2024/12/01</td>
+                  <td class="text-center">
+                    <button class="btn btn-outline btn-sm">編集</button>
+                    <button class="btn btn-outline btn-sm">招待再送</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>高橋 美咲</td>
+                  <td>takahashi@sample.co.jp</td>
+                  <td><span class="badge badge-approved">自社ユーザー</span></td>
+                  <td><span class="badge badge-inactive">無効</span></td>
+                  <td>2024/02/20</td>
+                  <td class="text-center">
+                    <button class="btn btn-outline btn-sm">編集</button>
+                    <button class="btn btn-success btn-sm">有効化</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ユーザー登録モーダル（非表示） -->
+  <div class="modal-overlay hidden" id="user-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">ユーザー登録</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">ユーザー名 <span class="required">*</span></label>
+          <input type="text" class="form-input" placeholder="例: 田中 太郎">
+        </div>
+        <div class="form-group">
+          <label class="form-label">メールアドレス <span class="required">*</span></label>
+          <input type="email" class="form-input" placeholder="例: tanaka@sample.co.jp">
+        </div>
+        <div class="form-group">
+          <label class="form-label">仮パスワード</label>
+          <div class="flex gap-2 items-center">
+            <input type="text" class="form-input" value="Abc123!@#" readonly style="background: #f9fafb;">
+            <button type="button" class="btn btn-outline btn-sm">再生成</button>
+          </div>
+          <p class="text-xs text-gray-500 mt-1">自動生成されます。登録後に連絡文をコピーしてください。</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary">キャンセル</button>
+        <button class="btn btn-primary">登録</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 招待完了モーダル（非表示） -->
+  <div class="modal-overlay hidden" id="invite-complete-modal">
+    <div class="modal" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3 class="modal-title">登録完了 - 招待情報</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-success mb-4">
+          ユーザーを登録しました。以下の情報をコピーして、メールやチャットで送信してください。
+        </div>
+        <div style="background: #f9fafb; padding: 1rem; border-radius: 0.375rem; font-family: monospace; font-size: 0.875rem; white-space: pre-wrap;">【システム招待のご案内】
+
+田中 太郎 様
+
+お世話になっております。
+請求書管理システムへのアクセス情報をお送りいたします。
+
+以下のURLからログインし、パスワードを変更してください。
+ログインURL: https://smart-order-mini.onrender.com/login
+ユーザーID: tanaka@sample.co.jp
+仮パスワード: Abc123!@#
+
+よろしくお願いいたします。</div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline">コピー</button>
+        <button class="btn btn-primary">閉じる</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

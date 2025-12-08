@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>商品マスタ一覧 - スマート受発注 mini</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="dashboard-layout">
+    <!-- サイドバー -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <h1>スマート受発注 mini</h1>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="SC-03_dashboard.html" class="nav-item">
+          <span class="nav-icon">📊</span>
+          ダッシュボード
+        </a>
+        <div class="nav-section">
+          <div class="nav-section-title">請求書管理</div>
+        </div>
+        <a href="SC-04_invoice-list.html" class="nav-item">
+          <span class="nav-icon">📄</span>
+          請求書一覧
+        </a>
+        <a href="SC-05_invoice-new.html" class="nav-item">
+          <span class="nav-icon">➕</span>
+          請求書作成
+        </a>
+        <div class="nav-section">
+          <div class="nav-section-title">マスタ管理</div>
+        </div>
+        <a href="SC-08_freelancer-list.html" class="nav-item">
+          <span class="nav-icon">👤</span>
+          フリーランス
+        </a>
+        <a href="SC-11_product-list.html" class="nav-item active">
+          <span class="nav-icon">📦</span>
+          商品マスタ
+        </a>
+        <div class="nav-section">
+          <div class="nav-section-title">設定</div>
+        </div>
+        <a href="SC-14_settings-company.html" class="nav-item">
+          <span class="nav-icon">🏢</span>
+          自社情報
+        </a>
+        <a href="SC-15_settings-users.html" class="nav-item">
+          <span class="nav-icon">👥</span>
+          ユーザー管理
+        </a>
+      </nav>
+    </aside>
+
+    <!-- メインコンテンツ -->
+    <main class="main-content">
+      <header class="header">
+        <h2 class="header-title">商品マスタ一覧</h2>
+        <div class="header-user">
+          <span class="user-name">山田 太郎</span>
+          <a href="SC-01_login.html" class="btn btn-outline btn-sm">ログアウト</a>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <!-- アクションバー -->
+        <div class="action-bar">
+          <div class="action-bar-left">
+            <a href="SC-12_product-new.html" class="btn btn-primary">➕ 新規登録</a>
+          </div>
+        </div>
+
+        <!-- 検索フォーム -->
+        <div class="card">
+          <div class="search-form">
+            <div class="form-group">
+              <label class="form-label">フリーランス</label>
+              <select class="form-select">
+                <option value="">すべて</option>
+                <option value="1">田中 一郎</option>
+                <option value="2">佐藤 花子</option>
+                <option value="3">鈴木 次郎</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">商品名</label>
+              <input type="text" class="form-input" placeholder="商品名で検索">
+            </div>
+            <div class="form-group">
+              <label class="form-label">ステータス</label>
+              <select class="form-select">
+                <option value="">すべて</option>
+                <option value="active">有効</option>
+                <option value="inactive">無効</option>
+              </select>
+            </div>
+            <div class="search-actions">
+              <button class="btn btn-primary">検索</button>
+              <button class="btn btn-secondary">クリア</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 一覧テーブル -->
+        <div class="card">
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>フリーランス名</th>
+                  <th>商品名・作業名</th>
+                  <th class="text-right">単価</th>
+                  <th class="text-center">消費税</th>
+                  <th class="text-center">税率</th>
+                  <th class="text-center">源泉税対象</th>
+                  <th>ステータス</th>
+                  <th class="text-center">アクション</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>田中 一郎</td>
+                  <td>Webサイト制作</td>
+                  <td class="text-right">¥100,000</td>
+                  <td class="text-center">別</td>
+                  <td class="text-center">10.0%</td>
+                  <td class="text-center">○</td>
+                  <td><span class="badge badge-active">有効</span></td>
+                  <td class="text-center">
+                    <a href="SC-13_product-edit.html" class="btn btn-outline btn-sm">編集</a>
+                    <button class="btn btn-danger btn-sm">削除</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>田中 一郎</td>
+                  <td>コンサルティング</td>
+                  <td class="text-right">¥50,000</td>
+                  <td class="text-center">別</td>
+                  <td class="text-center">10.0%</td>
+                  <td class="text-center">○</td>
+                  <td><span class="badge badge-active">有効</span></td>
+                  <td class="text-center">
+                    <a href="SC-13_product-edit.html" class="btn btn-outline btn-sm">編集</a>
+                    <button class="btn btn-danger btn-sm">削除</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>田中 一郎</td>
+                  <td>交通費</td>
+                  <td class="text-right">¥5,000</td>
+                  <td class="text-center">込</td>
+                  <td class="text-center">10.0%</td>
+                  <td class="text-center">-</td>
+                  <td><span class="badge badge-active">有効</span></td>
+                  <td class="text-center">
+                    <a href="SC-13_product-edit.html" class="btn btn-outline btn-sm">編集</a>
+                    <button class="btn btn-danger btn-sm">削除</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>佐藤 花子</td>
+                  <td>デザイン制作</td>
+                  <td class="text-right">¥80,000</td>
+                  <td class="text-center">別</td>
+                  <td class="text-center">10.0%</td>
+                  <td class="text-center">○</td>
+                  <td><span class="badge badge-active">有効</span></td>
+                  <td class="text-center">
+                    <a href="SC-13_product-edit.html" class="btn btn-outline btn-sm">編集</a>
+                    <button class="btn btn-danger btn-sm">削除</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>鈴木 次郎</td>
+                  <td>システム開発</td>
+                  <td class="text-right">¥120,000</td>
+                  <td class="text-center">別</td>
+                  <td class="text-center">10.0%</td>
+                  <td class="text-center">○</td>
+                  <td><span class="badge badge-inactive">無効</span></td>
+                  <td class="text-center">
+                    <a href="SC-13_product-edit.html" class="btn btn-outline btn-sm">編集</a>
+                    <button class="btn btn-danger btn-sm">削除</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- ページネーション -->
+          <div class="pagination">
+            <button class="pagination-btn" disabled>← 前へ</button>
+            <button class="pagination-btn active">1</button>
+            <button class="pagination-btn">次へ →</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

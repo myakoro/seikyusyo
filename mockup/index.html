@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>スマート受発注 mini - HTMLモック一覧</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .index-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    .index-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    .index-header h1 {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+    .index-header p {
+      color: var(--gray-500);
+    }
+    .screen-group {
+      margin-bottom: 2rem;
+    }
+    .screen-group h2 {
+      font-size: 1.25rem;
+      color: var(--gray-700);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--primary);
+    }
+    .screen-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    .screen-card {
+      background: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      padding: 1rem;
+      transition: box-shadow 0.2s;
+    }
+    .screen-card:hover {
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .screen-card a {
+      display: block;
+      text-decoration: none;
+    }
+    .screen-id {
+      font-size: 0.75rem;
+      color: var(--primary);
+      font-weight: 600;
+    }
+    .screen-name {
+      font-size: 1rem;
+      color: var(--gray-800);
+      font-weight: 500;
+      margin-top: 0.25rem;
+    }
+    .screen-desc {
+      font-size: 0.75rem;
+      color: var(--gray-500);
+      margin-top: 0.5rem;
+    }
+    .screen-url {
+      font-size: 0.75rem;
+      color: var(--gray-400);
+      margin-top: 0.25rem;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="index-container">
+    <div class="index-header">
+      <h1>スマート受発注 mini</h1>
+      <p>HTMLモック一覧（全16画面）</p>
+    </div>
+
+    <!-- 認証画面 -->
+    <div class="screen-group">
+      <h2>認証画面</h2>
+      <div class="screen-list">
+        <div class="screen-card">
+          <a href="SC-01_login.html">
+            <div class="screen-id">SC-01</div>
+            <div class="screen-name">ログイン画面</div>
+            <div class="screen-desc">ユーザーID・パスワードでログイン</div>
+            <div class="screen-url">/login</div>
+          </a>
+        </div>
+        <div class="screen-card">
+          <a href="SC-02_reset-password.html">
+            <div class="screen-id">SC-02</div>
+            <div class="screen-name">パスワードリセット画面</div>
+            <div class="screen-desc">パスワードリセット依頼</div>
+            <div class="screen-url">/reset-password</div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ダッシュボード -->
+    <div class="screen-group">
+      <h2>ダッシュボード</h2>
+      <div class="screen-list">
+        <div class="screen-card">
+          <a href="SC-03_dashboard.html">
+            <div class="screen-id">SC-03</div>
+            <div class="screen-name">ダッシュボード</div>
+            <div class="screen-desc">サマリー・最近の請求書・クイックアクション</div>
+            <div class="screen-url">/</div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 請求書管理 -->
+    <div class="screen-group">
+      <h2>請求書管理</h2>
+      <div class="screen-list">
+        <div class="screen-card">
+          <a href="SC-04_invoice-list.html">
+            <div class="screen-id">SC-04</div>
+            <div class="screen-name">請求書一覧</div>
+            <div class="screen-desc">請求書の検索・一覧表示</div>
+            <div class="screen-url">/invoices</div>
+          </a>
+        </div>
+        <div class="screen-card">
+          <a href="SC-05_invoice-new.html">
+            <div class="screen-id">SC-05</div>
+            <div class="screen-name">請求書作成</div>
+            <div class="screen-desc">新規請求書の作成</div>
+            <div class="screen-url">/invoices/new</div>
+          </a>
+        </div>
+        <div class="screen-card">
+          <a href="SC-06_invoice-edit.html">
+            <div class="screen-id">SC-06</div>
+            <div class="screen-name">請求書編集</div>
+            <div class="screen-desc">既存請求書の編集</div>
+            <div class="screen-url">/invoices/[id]/edit</div>
+          </a>
+        </div>
+        <div class="screen-card">
+          <a href="SC-07_invoice-detail.html">
+            <div class="screen-id">SC-07</div>
+            <div class="screen-name">請求書詳細（自社ユーザー）</div>
+            <div class="screen-desc">請求書の詳細表示・アクション</div>
+            <div class="screen-url">/invoices/[id]</div>
+          </a>
+        </div>
+        <div class="screen-card">
+          <a href="SC-07_invoice-detail-freelancer.html">
+            <div class="screen-id">SC-07</div>
+            <div class="screen-name">請求書詳細（フリーランス）</div>
+            <div class="screen-desc">承認・差し戻しアクション</div>
+            <div class="screen-url">/invoices/[id]</div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- フリーランス管理 -->
+    <div class="screen-group">
+      <h2>フリーランス管理</h2>
+      <div class="screen-list">
+        <div class="screen-card">
+          <a href="SC-08_freelancer-list.html">
+            <div class="screen-id">SC-08</div>
+            <div class="screen-name">フリーランス一覧</div>
+            <div class="screen-desc">フリーランスの検索・一覧表示</div>
+            <div class="screen-url">/freelancers</div>
+          </a>
+        </div>
+        <div class="screen-card">
+          <a href="SC-09_freelancer-new.html">
+            <div class="screen-id">SC-09</div>
+            <div class="screen-name">フリーランス登録</div>
+            <div class="screen-desc">新規フリーランスの登録</div>
+            <div class="screen-url">/freelancers/new</div>
+          </a>
+        </div>
+        <div class="screen-card">
+          <a href="SC-10_freelancer-edit.html">
+            <div class="screen-id">SC-10</div>
+            <div class="screen-name">フリーランス編集</div>
+            <div class="screen-desc">フリーランス情報の編集</div>
+            <div class="screen-url">/freelancers/[id]/edit</div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 商品マスタ管理 -->
+    <div class="screen-group">
+      <h2>商品マスタ管理</h2>
+      <div class="screen-list">
+        <div class="screen-card">
+          <a href="SC-11_product-list.html">
+            <div class="screen-id">SC-11</div>
+            <div class="screen-name">商品マスタ一覧</div>
+            <div class="screen-desc">商品マスタの検索・一覧表示</div>
+            <div class="screen-url">/products</div>
+          </a>
+        </div>
+        <div class="screen-card">
+          <a href="SC-12_product-new.html">
+            <div class="screen-id">SC-12</div>
+            <div class="screen-name">商品マスタ登録</div>
+            <div class="screen-desc">新規商品の登録</div>
+            <div class="screen-url">/products/new</div>
+          </a>
+        </div>
+        <div class="screen-card">
+          <a href="SC-13_product-edit.html">
+            <div class="screen-id">SC-13</div>
+            <div class="screen-name">商品マスタ編集</div>
+            <div class="screen-desc">商品情報の編集</div>
+            <div class="screen-url">/products/[id]/edit</div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 設定 -->
+    <div class="screen-group">
+      <h2>設定</h2>
+      <div class="screen-list">
+        <div class="screen-card">
+          <a href="SC-14_settings-company.html">
+            <div class="screen-id">SC-14</div>
+            <div class="screen-name">自社情報設定</div>
+            <div class="screen-desc">自社情報の編集</div>
+            <div class="screen-url">/settings/company</div>
+          </a>
+        </div>
+        <div class="screen-card">
+          <a href="SC-15_settings-users.html">
+            <div class="screen-id">SC-15</div>
+            <div class="screen-name">ユーザー管理</div>
+            <div class="screen-desc">自社ユーザーの管理</div>
+            <div class="screen-url">/settings/users</div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- フリーランス用画面 -->
+    <div class="screen-group">
+      <h2>フリーランス用画面</h2>
+      <div class="screen-list">
+        <div class="screen-card">
+          <a href="SC-16_mypage.html">
+            <div class="screen-id">SC-16</div>
+            <div class="screen-name">マイページ</div>
+            <div class="screen-desc">フリーランス本人の情報・請求書一覧</div>
+            <div class="screen-url">/mypage</div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
