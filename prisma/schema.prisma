@@ -1,0 +1,191 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  username      String    @unique
+  passwordHash  String    @map("password_hash")
+  role          String
+  status        String    @default("ACTIVE")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  createdInvoices      Invoice[]              @relation("InvoiceCreator")
+  invoiceStatusHistory InvoiceStatusHistory[]
+  auditLogs            AuditLog[]
+  freelancer           Freelancer?
+
+  @@index([email, role, status])
+  @@map("users")
+}
+
+model Freelancer {
+  id                    String    @id @default(uuid())
+  name                  String
+  nameKana              String?   @map("name_kana")
+  postalCode            String?   @map("postal_code")
+  address               String?
+  phone                 String?
+  email                 String    @unique
+  invoiceNumber         String?   @map("invoice_number")
+  bankName              String?   @map("bank_name")
+  bankBranch            String?   @map("bank_branch")
+  accountType           String?   @map("account_type")
+  accountNumber         String?   @map("account_number")
+  accountHolder         String?   @map("account_holder")
+  withholdingTaxDefault Boolean   @default(true) @map("withholding_tax_default")
+  status                String    @default("ACTIVE")
+  userId                String?   @unique @map("user_id")
+  createdAt             DateTime  @default(now()) @map("created_at")
+  updatedAt             DateTime  @updatedAt @map("updated_at")
+
+  user     User?     @relation(fields: [userId], references: [id])
+  products Product[]
+  invoices Invoice[]
+
+  @@index([status, email])
+  @@map("freelancers")
+}
+
+model Product {
+  id                   String   @id @default(uuid())
+  freelancerId         String?  @map("freelancer_id") // Optional for common products
+  name                 String
+  description          String?
+  unitPrice            Decimal  @map("unit_price")
+  taxType              String   @map("tax_type")
+  taxRate              Decimal  @default(10.00) @map("tax_rate")
+  withholdingTaxTarget Boolean  @default(true) @map("withholding_tax_target")
+  status               String   @default("ACTIVE")
+  displayOrder         Int      @default(0) @map("display_order")
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
+
+  freelancer   Freelancer?   @relation(fields: [freelancerId], references: [id])
+  invoiceItems InvoiceItem[]
+
+  @@index([freelancerId, status, displayOrder])
+  @@map("products")
+}
+
+model Invoice {
+  id                     String    @id @default(uuid())
+  invoiceNumber          String?   @unique @map("invoice_number")
+  freelancerId           String    @map("freelancer_id")
+  creatorId              String    @map("creator_id")
+  status                 String    @default("DRAFT")
+  billingDate            DateTime  @map("billing_date")
+  paymentDueDate         DateTime  @map("payment_due_date")
+  paymentDate            DateTime? @map("payment_date")
+  notes                  String?
+  companySnapshot        String?   @map("company_snapshot")
+  freelancerSnapshot     String?   @map("freelancer_snapshot")
+  subtotal               Decimal   @default(0)
+  withholdingTaxSubtotal Decimal   @default(0) @map("withholding_tax_subtotal")
+  totalWithTax           Decimal   @default(0) @map("total_with_tax")
+  withholdingTax         Decimal   @default(0) @map("withholding_tax")
+  invoiceAmount          Decimal   @default(0) @map("invoice_amount")
+  createdAt              DateTime  @default(now()) @map("created_at")
+  updatedAt              DateTime  @updatedAt @map("updated_at")
+  confirmedAt            DateTime? @map("confirmed_at")
+
+  freelancer    Freelancer             @relation(fields: [freelancerId], references: [id])
+  creator       User                   @relation("InvoiceCreator", fields: [creatorId], references: [id])
+  items         InvoiceItem[]
+  statusHistory InvoiceStatusHistory[]
+  auditLogs     AuditLog[]
+
+  @@index([invoiceNumber])
+  @@index([freelancerId, status])
+  @@index([creatorId, status])
+  @@index([status, billingDate])
+  @@map("invoices")
+}
+
+model InvoiceItem {
+  id                   String   @id @default(uuid())
+  invoiceId            String   @map("invoice_id")
+  productId            String?  @map("product_id")
+  lineNumber           Int      @map("line_number")
+  productName          String   @map("product_name")
+  unitPrice            Decimal  @map("unit_price")
+  quantity             Int      @default(1)
+  commissionRate       Decimal  @default(100.00) @map("commission_rate")
+  taxType              String   @map("tax_type")
+  taxRate              Decimal  @map("tax_rate")
+  withholdingTaxTarget Boolean  @map("withholding_tax_target")
+  amount               Decimal
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
+
+  invoice Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  product Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  @@index([invoiceId, lineNumber])
+  @@map("invoice_items")
+}
+
+model InvoiceStatusHistory {
+  id         String   @id @default(uuid())
+  invoiceId  String   @map("invoice_id")
+  fromStatus String?  @map("from_status")
+  toStatus   String   @map("to_status")
+  changedBy  String   @map("changed_by")
+  comment    String?
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  changer User    @relation(fields: [changedBy], references: [id])
+
+  @@index([invoiceId, createdAt])
+  @@map("invoice_status_history")
+}
+
+// Renamed and expanded for Company Settings
+model Company {
+  id                 String   @id @default(uuid())
+  name               String   @map("company_name")
+  postalCode         String?  @map("postal_code")
+  address            String?
+  phone              String? // matches API phoneNumber? API uses phoneNumber, schema uses phone. 
+  email              String?
+  registrationNumber String?  @map("registration_number")
+  
+  // Bank details
+  bankName           String?  @map("bank_name")
+  bankBranch         String?  @map("bank_branch")
+  accountType        String?  @map("account_type")
+  accountNumber      String?  @map("account_number")
+  accountHolder      String?  @map("account_holder")
+  
+  additionalInfo     String?  @map("additional_info")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  @@map("company_info")
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String?  @map("user_id")
+  invoiceId String?  @map("invoice_id")
+  action    String
+  details   String?
+  ipAddress String?  @map("ip_address")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user    User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  invoice Invoice? @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt])
+  @@index([invoiceId, createdAt])
+  @@index([action, createdAt])
+  @@map("audit_logs")
+}

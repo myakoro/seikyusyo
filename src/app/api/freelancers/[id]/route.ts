@@ -5,40 +5,44 @@ import { z } from "zod";
 
 const freelancerUpdateSchema = z.object({
     name: z.string().min(1, "氏名は必須です").max(200).optional(),
-    nameKana: z.string().max(200).optional().or(z.literal("")),
-    email: z.string().email("有効なメールアドレスを入力してください").optional(),
-    phone: z.string().min(1, "電話番号は必須です").max(20).optional(),
-    postalCode: z.string().regex(/^\d{7}$/, "郵便番号は7桁の数字です").optional(),
-    address: z.string().min(1, "住所は必須です").optional(),
-    invoiceNumber: z.string().regex(/^T\d{13}$/, "適格請求書登録番号はT+13桁の数字です").optional().or(z.literal("")),
-    bankName: z.string().min(1, "銀行名は必須です").optional(),
-    bankBranch: z.string().min(1, "支店名は必須です").optional(),
-    accountType: z.enum(["ORDINARY", "CURRENT", "SAVINGS"]).optional(),
-    accountNumber: z.string().min(1, "口座番号は必須です").max(20).optional(),
-    accountHolder: z.string().min(1, "口座名義は必須です").optional(),
-    withholdingTaxDefault: z.boolean().optional(),
+    postalCode: z.string().regex(/^\d{3}-?\d{4}$/, "郵便番号の形式が正しくありません").optional().or(z.literal("")),
+    address: z.string().optional(),
+    phoneNumber: z.string().optional(),
+    taxRegistrationNumber: z.string().optional(),
     status: z.enum(["ACTIVE", "INACTIVE"]).optional(),
 });
 
 export async function GET(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     const session = await auth();
     if (!session) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const { id } = await params;
+
     try {
         const freelancer = await prisma.freelancer.findUnique({
-            where: { id: params.id },
-            include: {
-                products: true, // Include products if needed
-            }
+            where: { id },
+            include: { user: { select: { email: true, username: true } } }
         });
 
         if (!freelancer) {
             return NextResponse.json({ error: "Freelancer not found" }, { status: 404 });
+        }
+
+        // Access check: Company can view all, Freelancer can view self
+        if (session.user.role === "FREELANCER") {
+            const userFreelancer = await prisma.freelancer.findUnique({
+                where: { userId: session.user.id }
+            });
+            // Usually logged in freelancer checks their own profile via /api/freelancers/me or similar, 
+            // but if accessing by ID, ensure match.
+            if (!userFreelancer || userFreelancer.id !== id) {
+                return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+            }
         }
 
         return NextResponse.json(freelancer);
@@ -53,7 +57,7 @@ export async function GET(
 
 export async function PUT(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     const session = await auth();
     if (!session) {
@@ -64,25 +68,37 @@ export async function PUT(
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
+    const { id } = await params;
+
     try {
         const json = await request.json();
         const body = freelancerUpdateSchema.parse(json);
 
-        // Convert empty strings to null for nullable fields
-        const data: any = { ...body };
-        if (body.nameKana === "") data.nameKana = null;
-        if (body.invoiceNumber === "") data.invoiceNumber = null;
-
         const updatedFreelancer = await prisma.freelancer.update({
-            where: { id: params.id },
-            data: data,
+            where: { id },
+            data: {
+                name: body.name,
+                postalCode: body.postalCode || null,
+                address: body.address || null,
+                phone: body.phoneNumber || null,
+                invoiceNumber: body.taxRegistrationNumber || null,
+                status: body.status,
+            },
+        });
+
+        await prisma.auditLog.create({
+            data: {
+                userId: session.user.id,
+                action: "FREELANCER_UPDATE",
+                details: `Updated freelancer: ${updatedFreelancer.name}`
+            }
         });
 
         return NextResponse.json(updatedFreelancer);
     } catch (error) {
         if (error instanceof z.ZodError) {
             return NextResponse.json(
-                { error: "Validation Error", details: error.errors },
+                { error: "Validation Error", details: (error as any).errors },
                 { status: 400 }
             );
         }
@@ -96,7 +112,7 @@ export async function PUT(
 
 export async function DELETE(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     const session = await auth();
     if (!session) {
@@ -107,22 +123,37 @@ export async function DELETE(
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
+    const { id } = await params;
+
     try {
-        await prisma.freelancer.delete({
-            where: { id: params.id },
+        // Soft delete: Update status to INACTIVE
+        await prisma.freelancer.update({
+            where: { id },
+            data: { status: "INACTIVE" }
         });
-        return NextResponse.json({ message: "Freelancer deleted successfully" });
-    } catch (error: any) {
-        // Check for foreign key constraint violation
-        if (error.code === 'P2003') {
-            return NextResponse.json(
-                { error: "Cannot delete freelancer because they have associated records (invoices or products)." },
-                { status: 409 }
-            );
+
+        // Optionally deactivate User account if linked?
+        const freelancer = await prisma.freelancer.findUnique({ where: { id } });
+        if (freelancer && freelancer.userId) {
+            await prisma.user.update({
+                where: { id: freelancer.userId },
+                data: { status: "INACTIVE" }
+            });
         }
-        console.error("Failed to delete freelancer:", error);
+
+        await prisma.auditLog.create({
+            data: {
+                userId: session.user.id,
+                action: "FREELANCER_DELETE",
+                details: `Deactivated freelancer ID: ${id}`
+            }
+        });
+
+        return NextResponse.json({ message: "Freelancer deactivated successfully" });
+    } catch (error) {
+        console.error("Failed to deactivate freelancer:", error);
         return NextResponse.json(
-            { error: "Failed to delete freelancer" },
+            { error: "Failed to deactivate freelancer" },
             { status: 500 }
         );
     }

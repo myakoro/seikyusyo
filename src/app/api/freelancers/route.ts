@@ -2,91 +2,135 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { z } from "zod";
+import bcrypt from "bcryptjs";
 
-const freelancerSchema = z.object({
-    name: z.string().min(1, "氏名は必須です").max(200),
-    nameKana: z.string().max(200).optional().or(z.literal("")),
+// Validation schema for creating a freelancer
+// Note: Freelancer creation involves creating a User account AND a Freelancer profile.
+const createFreelancerSchema = z.object({
+    name: z.string().min(1, "氏名は必須です"),
     email: z.string().email("有効なメールアドレスを入力してください"),
-    phone: z.string().min(1, "電話番号は必須です").max(20),
-    postalCode: z.string().regex(/^\d{7}$/, "郵便番号は7桁の数字です"),
-    address: z.string().min(1, "住所は必須です"),
-    invoiceNumber: z.string().regex(/^T\d{13}$/, "適格請求書登録番号はT+13桁の数字です").optional().or(z.literal("")),
-    bankName: z.string().min(1, "銀行名は必須です"),
-    bankBranch: z.string().min(1, "支店名は必須です"),
-    accountType: z.enum(["ORDINARY", "CURRENT", "SAVINGS"]), // 普通、当座、貯蓄
-    accountNumber: z.string().min(1, "口座番号は必須です").max(20),
-    accountHolder: z.string().min(1, "口座名義は必須です"),
-    withholdingTaxDefault: z.boolean().default(true),
+    username: z.string().min(4, "ユーザー名は4文字以上で入力してください").regex(/^[a-zA-Z0-9_-]+$/, "ユーザー名は半角英数字、ハイフン、アンダースコアのみ使用可能です"),
+    password: z.string().min(8, "パスワードは8文字以上で入力してください"),
+    postalCode: z.string().regex(/^\d{3}-?\d{4}$/, "郵便番号の形式が正しくありません").optional().or(z.literal("")),
+    address: z.string().optional(),
+    phoneNumber: z.string().optional(),
+    taxRegistrationNumber: z.string().optional(),
     status: z.enum(["ACTIVE", "INACTIVE"]).default("ACTIVE"),
 });
 
-export async function GET() {
+export async function GET(request: Request) {
     const session = await auth();
-    if (!session) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    if (session.user.role !== "COMPANY") {
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
+    const { searchParams } = new URL(request.url);
+    const status = searchParams.get("status");
+
     try {
+        const whereClause: any = {};
+        if (status) {
+            whereClause.status = status;
+        }
+
         const freelancers = await prisma.freelancer.findMany({
+            where: whereClause,
             orderBy: { createdAt: "desc" },
+            include: {
+                user: {
+                    select: {
+                        email: true,
+                        username: true,
+                        status: true // User status, distinct from Freelancer profile status?
+                        // Usually they align, but let's just select it.
+                    }
+                }
+            }
         });
-        return NextResponse.json(freelancers);
+
+        return NextResponse.json({ freelancers });
     } catch (error) {
         console.error("Failed to fetch freelancers:", error);
-        return NextResponse.json(
-            { error: "Failed to fetch freelancers" },
-            { status: 500 }
-        );
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }
 
 export async function POST(request: Request) {
     const session = await auth();
-    if (!session) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    // Only COMPANY role can create freelancers (unless we implement self-registration later)
     if (session.user.role !== "COMPANY") {
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     try {
         const json = await request.json();
-        const body = freelancerSchema.parse(json);
+        const body = createFreelancerSchema.parse(json);
 
-        // Check duplicate email
-        const existing = await prisma.freelancer.findUnique({
-            where: { email: body.email }
-        });
-        if (existing) {
-            return NextResponse.json({ error: "Email already registered" }, { status: 409 });
-        }
-
-        const freelancer = await prisma.freelancer.create({
-            data: {
-                ...body,
-                // If invoiceNumber is empty string, make it null for DB unique constraint/cleanliness if desired,
-                // but schema.prisma doesn't enforce unique on invoice_number for freelancers (only invoices).
-                // However, keeping empty strings as empty strings is fine if consistent.
-                // Let's convert empty strings to null for nullable fields to be cleaner.
-                nameKana: body.nameKana || null,
-                invoiceNumber: body.invoiceNumber || null,
-            },
+        // Check if email or username already exists
+        const existingUser = await prisma.user.findFirst({
+            where: {
+                OR: [
+                    { email: body.email },
+                    { username: body.username }
+                ]
+            }
         });
 
-        return NextResponse.json(freelancer, { status: 201 });
-    } catch (error) {
-        if (error instanceof z.ZodError) {
+        if (existingUser) {
             return NextResponse.json(
-                { error: "Validation Error", details: error.errors },
-                { status: 400 }
+                { error: "Email or Username already exists" },
+                { status: 409 }
             );
         }
+
+        // Create User and Freelancer inside a transaction
+        const hashedPassword = await bcrypt.hash(body.password, 10);
+
+        const result = await prisma.$transaction(async (tx) => {
+            const user = await tx.user.create({
+                data: {
+                    username: body.username,
+                    email: body.email,
+                    passwordHash: hashedPassword,
+                    role: "FREELANCER",
+                    status: "ACTIVE", // Initial user status
+                }
+            });
+
+            const freelancer = await tx.freelancer.create({
+                data: {
+                    userId: user.id,
+                    name: body.name,
+                    postalCode: body.postalCode || null,
+                    address: body.address || null,
+                    phone: body.phoneNumber || null,
+                    invoiceNumber: body.taxRegistrationNumber || null,
+                    status: body.status,
+                }
+            });
+
+            // Log action
+            await tx.auditLog.create({
+                data: {
+                    userId: session.user.id,
+                    action: "FREELANCER_CREATE",
+                    details: `Created freelancer: ${body.name} (${user.email})`
+                }
+            });
+
+            return freelancer;
+        });
+
+        return NextResponse.json(result, { status: 201 });
+
+    } catch (error) {
+        if (error instanceof z.ZodError) {
+            return NextResponse.json({ error: "Validation Error", details: (error as any).errors }, { status: 400 });
+        }
         console.error("Failed to create freelancer:", error);
-        return NextResponse.json(
-            { error: "Failed to create freelancer" },
-            { status: 500 }
-        );
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }

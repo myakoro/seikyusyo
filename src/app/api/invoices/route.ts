@@ -31,13 +31,14 @@ export async function GET(request: Request) {
 
     const { searchParams } = new URL(request.url);
     const status = searchParams.get("status");
-    const freelancerId = searchParams.get("freelancer_id");
-    // Implement other filters as needed
+    const freelancerName = searchParams.get("freelancerName");
+    const creatorName = searchParams.get("creatorName");
+    const billingDateFrom = searchParams.get("billingDateFrom");
+    const billingDateTo = searchParams.get("billingDateTo");
 
     try {
         const whereClause: any = {};
         if (status) whereClause.status = status;
-        if (freelancerId) whereClause.freelancerId = freelancerId;
 
         // If freelancer logged in, restrict to their invoices
         if (session.user.role === "FREELANCER") {
@@ -45,9 +46,34 @@ export async function GET(request: Request) {
                 where: { userId: session.user.id }
             });
             if (!freelancer) {
-                return NextResponse.json([]); // No linked freelancer profile
+                return NextResponse.json({ invoices: [] });
             }
             whereClause.freelancerId = freelancer.id;
+        }
+
+        // Search by freelancer name
+        if (freelancerName) {
+            whereClause.freelancer = {
+                name: { contains: freelancerName }
+            };
+        }
+
+        // Search by creator name
+        if (creatorName) {
+            whereClause.creator = {
+                username: { contains: creatorName }
+            };
+        }
+
+        // Date range filter
+        if (billingDateFrom || billingDateTo) {
+            whereClause.billingDate = {};
+            if (billingDateFrom) {
+                whereClause.billingDate.gte = new Date(billingDateFrom);
+            }
+            if (billingDateTo) {
+                whereClause.billingDate.lte = new Date(billingDateTo);
+            }
         }
 
         const invoices = await prisma.invoice.findMany({
@@ -62,7 +88,20 @@ export async function GET(request: Request) {
             },
             orderBy: { createdAt: "desc" },
         });
-        return NextResponse.json(invoices);
+
+        const formattedInvoices = invoices.map(inv => ({
+            id: inv.id,
+            invoiceNumber: inv.invoiceNumber,
+            freelancerName: inv.freelancer.name,
+            billingDate: inv.billingDate.toISOString(),
+            paymentDueDate: inv.paymentDueDate.toISOString(),
+            invoiceAmount: Number(inv.invoiceAmount),
+            status: inv.status,
+            creatorName: inv.creator.username,
+            createdAt: inv.createdAt.toISOString(),
+        }));
+
+        return NextResponse.json({ invoices: formattedInvoices });
     } catch (error) {
         console.error("Failed to fetch invoices:", error);
         return NextResponse.json(
@@ -148,7 +187,7 @@ export async function POST(request: Request) {
     } catch (error) {
         if (error instanceof z.ZodError) {
             return NextResponse.json(
-                { error: "Validation Error", details: error.errors },
+                { error: "Validation Error", details: (error as any).errors },
                 { status: 400 }
             );
         }

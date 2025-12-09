@@ -25,16 +25,18 @@ const updateInvoiceSchema = z.object({
 
 export async function GET(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     const session = await auth();
     if (!session) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const { id } = await params;
+
     try {
         const invoice = await prisma.invoice.findUnique({
-            where: { id: params.id },
+            where: { id },
             include: {
                 items: {
                     orderBy: { lineNumber: 'asc' }
@@ -94,16 +96,15 @@ export async function PUT(
         const body = updateInvoiceSchema.parse(json);
 
         // Check status
+        const { id } = await params;
         const currentInvoice = await prisma.invoice.findUnique({
-            where: { id: params.id },
+            where: { id },
             include: { items: true }
         });
         if (!currentInvoice) {
             return NextResponse.json({ error: "Invoice not found" }, { status: 404 });
         }
         if (currentInvoice.status !== "DRAFT" && currentInvoice.status !== "REJECTED") {
-            // Allow editing REJECTED? Usually yes, to fix and resubmit.
-            // But for minimal scope let's say DRAFT/REJECTED is editable, processed ones not.
             const editableStatuses = ["DRAFT", "REJECTED"];
             if (!editableStatuses.includes(currentInvoice.status)) {
                 return NextResponse.json({ error: "Cannot edit invoice in current status" }, { status: 400 });
@@ -119,7 +120,17 @@ export async function PUT(
 
         await prisma.$transaction(async (tx) => {
             if (body.items) {
-                const calculation = calculateInvoice(body.items);
+                // Cast body.items elements to match InvoiceItemInput
+                const inputItems = body.items.map((item: any) => ({
+                    unitPrice: item.unitPrice,
+                    quantity: item.quantity,
+                    commissionRate: item.commissionRate,
+                    taxType: item.taxType,
+                    taxRate: item.taxRate,
+                    withholdingTaxTarget: item.withholdingTaxTarget
+                }));
+
+                const calculation = calculateInvoice(inputItems);
 
                 // Update Amount fields
                 updateData.subtotal = calculation.subtotal;
@@ -130,12 +141,12 @@ export async function PUT(
 
                 // Replace Items
                 await tx.invoiceItem.deleteMany({
-                    where: { invoiceId: params.id }
+                    where: { invoiceId: id }
                 });
 
                 await tx.invoiceItem.createMany({
                     data: body.items.map((item: any, index: number) => ({
-                        invoiceId: params.id,
+                        invoiceId: id,
                         productId: item.productId || null,
                         lineNumber: index + 1,
                         productName: item.productName,
@@ -152,7 +163,7 @@ export async function PUT(
 
             // Update Invoice Header
             await tx.invoice.update({
-                where: { id: params.id },
+                where: { id },
                 data: updateData
             });
 
@@ -177,7 +188,7 @@ export async function PUT(
     } catch (error) {
         if (error instanceof z.ZodError) {
             return NextResponse.json(
-                { error: "Validation Error", details: error.errors },
+                { error: "Validation Error", details: (error as any).errors },
                 { status: 400 }
             );
         }
@@ -191,7 +202,7 @@ export async function PUT(
 
 export async function DELETE(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     const session = await auth();
     if (!session) {
@@ -202,9 +213,11 @@ export async function DELETE(
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
+    const { id } = await params;
+
     try {
         const invoice = await prisma.invoice.findUnique({
-            where: { id: params.id }
+            where: { id }
         });
         if (!invoice) {
             return NextResponse.json({ error: "Invoice not found" }, { status: 404 });
@@ -217,17 +230,15 @@ export async function DELETE(
         // Cascade delete handles items, but we should do it explicitly transactionally if complex logic needed.
         // Schema says ON DELETE CASCADE for Items and History.
         await prisma.invoice.delete({
-            where: { id: params.id }
+            where: { id }
         });
 
         await prisma.auditLog.create({
             data: {
                 userId: session.user.id,
-                invoiceId: params.id, // ID is gone, but we can store it as string ref? AuditLog invoice_id relies on FK ON DELETE SET NULL.
-                // So invoice_id becomes null.
-                // To keep reference, we should put ID in details.
+                invoiceId: null, // Set null as invoice is deleted
                 action: "INVOICE_DELETE",
-                details: `Deleted invoice ID: ${params.id}`
+                details: `Deleted invoice ID: ${id}`
             }
         });
 

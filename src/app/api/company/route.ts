@@ -3,77 +3,101 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { z } from "zod";
 
-// Schema for company info validation
-const companyInfoSchema = z.object({
-    companyName: z.string().min(1, "会社名は必須です").max(200),
-    postalCode: z.string().regex(/^\d{7}$/, "郵便番号は7桁の数字です").optional(),
-    address: z.string().max(500).optional(),
-    phone: z.string().max(20).optional(),
-    email: z.string().email("有効なメールアドレスを入力してください").optional().or(z.literal("")),
-    additionalInfo: z.string().max(1000).optional(),
+const companySchema = z.object({
+    name: z.string().min(1, "会社名は必須です"),
+    postalCode: z.string().optional(),
+    address: z.string().min(1, "住所は必須です"),
+    phoneNumber: z.string().optional(),
+    email: z.string().email().optional().or(z.literal("")),
+    registrationNumber: z.string().regex(/^T\d{13}$/, "適格請求書登録番号の形式が正しくありません(T+13桁)").optional().or(z.literal("")),
+    // Bank details
+    bankName: z.string().optional(),
+    bankBranch: z.string().optional(),
+    accountType: z.enum(["ORDINARY", "CURRENT", "SAVINGS"]).optional(),
+    accountNumber: z.string().optional(),
+    accountHolder: z.string().optional(),
 });
 
-export async function GET() {
+export async function GET(request: Request) {
     const session = await auth();
-    if (!session) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     try {
-        const companyInfo = await prisma.companyInfo.findFirst();
-        return NextResponse.json(companyInfo || {});
+        // Assuming single tenant/company system, fetch the first record
+        const company = await prisma.company.findFirst();
+        return NextResponse.json(company || {}); // Return empty object if not set
     } catch (error) {
-        console.error("Failed to fetch company info:", error);
-        return NextResponse.json(
-            { error: "Failed to fetch company info" },
-            { status: 500 }
-        );
+        console.error("Failed to fetch company:", error);
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }
 
 export async function PUT(request: Request) {
     const session = await auth();
-    if (!session) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    // Only COMPANY role usually edits this, but specific requirement isn't strict yet.
-    // Assuming minimal RBAC: any authenticated user for now, or strict "COMPANY" role check if needed.
-    if (session.user.role !== "COMPANY" && session.user.role !== "ADMIN") {
-        // Note: role might differ based on setup. Default schema has "COMPANY" or "FREELANCER".
-        // Let's assume only COMPANY role can edit.
+    if (session.user.role !== "COMPANY") {
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     try {
         const json = await request.json();
-        const body = companyInfoSchema.parse(json);
+        const body = companySchema.parse(json);
 
-        const existing = await prisma.companyInfo.findFirst();
+        // Fetch existing company to update or create new if not exists
+        const existingCompany = await prisma.company.findFirst();
 
-        if (existing) {
-            const updated = await prisma.companyInfo.update({
-                where: { id: existing.id },
-                data: body,
+        let company;
+        if (existingCompany) {
+            company = await prisma.company.update({
+                where: { id: existingCompany.id },
+                data: {
+                    name: body.name,
+                    postalCode: body.postalCode || null,
+                    address: body.address,
+                    phone: body.phoneNumber || null,
+                    email: body.email || null,
+                    registrationNumber: body.registrationNumber || null,
+                    bankName: body.bankName || null,
+                    bankBranch: body.bankBranch || null,
+                    accountType: body.accountType || "ORDINARY",
+                    accountNumber: body.accountNumber || null,
+                    accountHolder: body.accountHolder || null,
+                }
             });
-            return NextResponse.json(updated);
         } else {
-            const created = await prisma.companyInfo.create({
-                data: body,
+            company = await prisma.company.create({
+                data: {
+                    name: body.name,
+                    postalCode: body.postalCode || null,
+                    address: body.address,
+                    phone: body.phoneNumber || null,
+                    email: body.email || null,
+                    registrationNumber: body.registrationNumber || null,
+                    bankName: body.bankName || null,
+                    bankBranch: body.bankBranch || null,
+                    accountType: body.accountType || "ORDINARY",
+                    accountNumber: body.accountNumber || null,
+                    accountHolder: body.accountHolder || null,
+                }
             });
-            return NextResponse.json(created);
         }
+
+        await prisma.auditLog.create({
+            data: {
+                userId: session.user.id,
+                action: "COMPANY_UPDATE",
+                details: "Updated company settings"
+            }
+        });
+
+        return NextResponse.json(company);
+
     } catch (error) {
         if (error instanceof z.ZodError) {
-            return NextResponse.json(
-                { error: "Validation Error", details: error.errors },
-                { status: 400 }
-            );
+            return NextResponse.json({ error: "Validation Error", details: (error as any).errors }, { status: 400 });
         }
-        console.error("Failed to update company info:", error);
-        return NextResponse.json(
-            { error: "Failed to update company info" },
-            { status: 500 }
-        );
+        console.error("Failed to update company:", error);
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }

@@ -8,7 +8,7 @@
 
 1. **[01_システム前提条件・構成.md](./01_システム前提条件・構成.md)**
    - 開発環境・デプロイ環境の前提条件
-   - 技術スタック（Next.js、PostgreSQL、Render）
+   - 技術スタック（Next.js、SQLite、Render）
    - システムアーキテクチャ
    - ディレクトリ構成
 
@@ -71,10 +71,10 @@
 - @react-pdf/renderer
 
 ### データベース
-- PostgreSQL 15+
+- SQLite
 
 ### デプロイ
-- Render（Web Service + PostgreSQL）
+- Render（Web Service + Render Disk）
 - GitHub（自動デプロイ）
 
 ## 開発の進め方

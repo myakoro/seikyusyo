@@ -11,17 +11,19 @@ const statusUpdateSchema = z.object({
 
 export async function POST(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     const session = await auth();
     if (!session) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const { id } = await params;
+
     try {
         const json = await request.json();
         const body = statusUpdateSchema.parse(json);
-        const invoiceId = params.id;
+        const invoiceId = id;
 
         const invoice = await prisma.invoice.findUnique({
             where: { id: invoiceId },
@@ -52,24 +54,18 @@ export async function POST(
 
         } else if (session.user.role === "COMPANY") {
             // Company can mark as PAID when APPROVED
-            // Also can Force Approve/Reject? Usually Waiting for Freelancer.
-            // Let's assume Company marks PAID after payment.
+            // Or REJECT when PENDING_APPROVAL (send back)
+
             if (body.status === "PAID") {
                 if (invoice.status !== "APPROVED") {
                     return NextResponse.json({ error: "Only APPROVED invoices can be paid" }, { status: 400 });
                 }
-            } else {
-                // Can Company Approve on behalf? Or Reject? 
-                // Maybe reject a pending one?
-                // Let's allow Company to REJECT (send back) at PENDING_APPROVAL too.
-                if (invoice.status === "PENDING_APPROVAL" && body.status === "REJECTED") {
-                    // OK
-                } else {
-                    // Other transitions restricted for Company for now to simple flows
-                    if (body.status !== "PAID") {
-                        return NextResponse.json({ error: "Invalid status transition for Company" }, { status: 400 });
-                    }
+            } else if (body.status === "REJECTED") {
+                if (invoice.status !== "PENDING_APPROVAL") {
+                    return NextResponse.json({ error: "Can only reject pending invoices" }, { status: 400 });
                 }
+            } else {
+                return NextResponse.json({ error: "Invalid status transition for Company" }, { status: 400 });
             }
         } else {
             return NextResponse.json({ error: "Forbidden" }, { status: 403 });
@@ -121,7 +117,7 @@ export async function POST(
     } catch (error) {
         if (error instanceof z.ZodError) {
             return NextResponse.json(
-                { error: "Validation Error", details: error.errors },
+                { error: "Validation Error", details: (error as any).errors },
                 { status: 400 }
             );
         }

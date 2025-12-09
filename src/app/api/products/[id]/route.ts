@@ -5,26 +5,29 @@ import { z } from "zod";
 
 const productUpdateSchema = z.object({
     name: z.string().min(1, "商品名は必須です").max(200).optional(),
+    description: z.string().optional(),
     unitPrice: z.number().min(0, "単価は0以上である必要があります").optional(),
     taxType: z.enum(["INCLUSIVE", "EXCLUSIVE"]).optional(),
-    taxRate: z.number().optional(),
+    taxRate: z.number().min(0).max(100).optional(),
     withholdingTaxTarget: z.boolean().optional(),
     status: z.enum(["ACTIVE", "INACTIVE"]).optional(),
-    displayOrder: z.number().int().optional(),
+    freelancerId: z.string().nullable().optional(),
 });
 
 export async function GET(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     const session = await auth();
     if (!session) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const { id } = await params;
+
     try {
         const product = await prisma.product.findUnique({
-            where: { id: params.id },
+            where: { id },
             include: {
                 freelancer: {
                     select: { name: true }
@@ -48,7 +51,7 @@ export async function GET(
 
 export async function PUT(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     const session = await auth();
     if (!session) {
@@ -59,20 +62,30 @@ export async function PUT(
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
+    const { id } = await params;
+
     try {
         const json = await request.json();
         const body = productUpdateSchema.parse(json);
 
         const updatedProduct = await prisma.product.update({
-            where: { id: params.id },
+            where: { id },
             data: body,
+        });
+
+        await prisma.auditLog.create({
+            data: {
+                userId: session.user.id,
+                action: "PRODUCT_UPDATE",
+                details: `Updated product: ${updatedProduct.name}`
+            }
         });
 
         return NextResponse.json(updatedProduct);
     } catch (error) {
         if (error instanceof z.ZodError) {
             return NextResponse.json(
-                { error: "Validation Error", details: error.errors },
+                { error: "Validation Error", details: (error as any).errors },
                 { status: 400 }
             );
         }
@@ -86,7 +99,7 @@ export async function PUT(
 
 export async function DELETE(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     const session = await auth();
     if (!session) {
@@ -97,15 +110,28 @@ export async function DELETE(
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
+    const { id } = await params;
+
     try {
-        await prisma.product.delete({
-            where: { id: params.id },
+        // Soft delete: Update status to INACTIVE
+        await prisma.product.update({
+            where: { id },
+            data: { status: "INACTIVE" }
         });
-        return NextResponse.json({ message: "Product deleted successfully" });
+
+        await prisma.auditLog.create({
+            data: {
+                userId: session.user.id,
+                action: "PRODUCT_DELETE",
+                details: `Deactivated product ID: ${id}`
+            }
+        });
+
+        return NextResponse.json({ message: "Product deactivated successfully" });
     } catch (error) {
-        console.error("Failed to delete product:", error);
+        console.error("Failed to deactivate product:", error);
         return NextResponse.json(
-            { error: "Failed to delete product" },
+            { error: "Failed to deactivate product" },
             { status: 500 }
         );
     }
