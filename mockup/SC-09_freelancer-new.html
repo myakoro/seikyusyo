@@ -86,23 +86,24 @@
                   <input type="email" class="form-input" placeholder="例: tanaka@example.com">
                 </div>
                 <div class="form-group">
-                  <label class="form-label">電話番号</label>
+                  <label class="form-label">電話番号 <span class="required">*</span></label>
                   <input type="tel" class="form-input" placeholder="例: 090-1234-5678">
                 </div>
               </div>
               <div class="form-row">
                 <div class="form-group">
-                  <label class="form-label">郵便番号</label>
+                  <label class="form-label">郵便番号 <span class="required">*</span></label>
                   <input type="text" class="form-input" placeholder="例: 1500001" style="width: 150px;">
                 </div>
               </div>
               <div class="form-group">
-                <label class="form-label">住所</label>
+                <label class="form-label">住所 <span class="required">*</span></label>
                 <textarea class="form-textarea" rows="2" placeholder="例: 東京都渋谷区神宮前1-2-3"></textarea>
               </div>
               <div class="form-group">
-                <label class="form-label">インボイス番号</label>
-                <input type="text" class="form-input" placeholder="例: T1234567890123" style="width: 250px;">
+                <label class="form-label">適格請求書発行事業者登録番号</label>
+                <input type="text" class="form-input" placeholder="T1234567890123" style="width: 250px;" maxlength="14">
+                <p class="text-xs text-gray-500 mt-1">任意項目です。形式: 「T」 + 数字13桁</p>
               </div>
             </div>
           </div>
@@ -113,17 +114,17 @@
               <h3 class="invoice-section-title">振込先情報</h3>
               <div class="form-row">
                 <div class="form-group">
-                  <label class="form-label">銀行名</label>
+                  <label class="form-label">銀行名 <span class="required">*</span></label>
                   <input type="text" class="form-input" placeholder="例: 三菱UFJ銀行">
                 </div>
                 <div class="form-group">
-                  <label class="form-label">支店名</label>
+                  <label class="form-label">支店名 <span class="required">*</span></label>
                   <input type="text" class="form-input" placeholder="例: 渋谷支店">
                 </div>
               </div>
               <div class="form-row">
                 <div class="form-group">
-                  <label class="form-label">口座種別</label>
+                  <label class="form-label">口座種別 <span class="required">*</span></label>
                   <select class="form-select" style="width: 150px;">
                     <option value="">選択してください</option>
                     <option value="ordinary">普通</option>
@@ -132,12 +133,12 @@
                   </select>
                 </div>
                 <div class="form-group">
-                  <label class="form-label">口座番号</label>
+                  <label class="form-label">口座番号 <span class="required">*</span></label>
                   <input type="text" class="form-input" placeholder="例: 1234567" style="width: 150px;">
                 </div>
               </div>
               <div class="form-group">
-                <label class="form-label">口座名義</label>
+                <label class="form-label">口座名義 <span class="required">*</span></label>
                 <input type="text" class="form-input" placeholder="例: タナカ イチロウ">
               </div>
             </div>

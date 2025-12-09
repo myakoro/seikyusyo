@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>請求書PDFレイアウト - モックアップ</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Hiragino Mincho ProN", "Yu Mincho", "MS Mincho", serif;
+      background: #f0f0f0;
+      padding: 20px;
+    }
+
+    .pdf-container {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto;
+      background: white;
+      padding: 20mm 25mm;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    /* ヘッダー */
+    .pdf-header {
+      text-align: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #333;
+    }
+
+    .pdf-title {
+      font-size: 24pt;
+      font-weight: bold;
+      letter-spacing: 0.5em;
+      margin-bottom: 15px;
+    }
+
+    .pdf-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10pt;
+    }
+
+    .pdf-meta-item {
+      text-align: left;
+    }
+
+    /* セクション */
+    .pdf-section {
+      margin-bottom: 15px;
+    }
+
+    .pdf-section-title {
+      font-size: 11pt;
+      font-weight: bold;
+      background: #f5f5f5;
+      padding: 5px 10px;
+      margin-bottom: 8px;
+      border-left: 3px solid #333;
+    }
+
+    .pdf-section-content {
+      padding: 8px 10px;
+      font-size: 10pt;
+      line-height: 1.6;
+    }
+
+    /* 2カラムレイアウト */
+    .pdf-two-columns {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 15px;
+    }
+
+    .pdf-column {
+      flex: 1;
+    }
+
+    .pdf-column .pdf-section {
+      margin-bottom: 0;
+      height: 100%;
+    }
+
+    .pdf-column .pdf-section-content {
+      border: 1px solid #ddd;
+      border-top: none;
+      min-height: 100px;
+    }
+
+    /* 振込先情報 */
+    .bank-info {
+      border: 1px solid #ddd;
+      border-top: none;
+    }
+
+    .bank-info-row {
+      display: flex;
+      border-bottom: 1px solid #eee;
+    }
+
+    .bank-info-row:last-child {
+      border-bottom: none;
+    }
+
+    .bank-info-label {
+      width: 100px;
+      background: #fafafa;
+      padding: 5px 10px;
+      font-weight: bold;
+      font-size: 9pt;
+    }
+
+    .bank-info-value {
+      flex: 1;
+      padding: 5px 10px;
+      font-size: 10pt;
+    }
+
+    /* 明細テーブル */
+    .pdf-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9pt;
+      margin-bottom: 15px;
+    }
+
+    .pdf-table th,
+    .pdf-table td {
+      border: 1px solid #333;
+      padding: 6px 8px;
+      text-align: center;
+    }
+
+    .pdf-table th {
+      background: #f0f0f0;
+      font-weight: bold;
+    }
+
+    .pdf-table td.text-left {
+      text-align: left;
+    }
+
+    .pdf-table td.text-right {
+      text-align: right;
+    }
+
+    /* 集計 */
+    .pdf-summary {
+      margin-left: auto;
+      width: 280px;
+      margin-bottom: 20px;
+    }
+
+    .pdf-summary-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 0;
+      font-size: 10pt;
+      border-bottom: 1px dotted #ccc;
+    }
+
+    .pdf-summary-row.total {
+      font-size: 12pt;
+      font-weight: bold;
+      border-bottom: 2px solid #333;
+      border-top: 2px solid #333;
+      padding: 8px 0;
+      margin-top: 5px;
+    }
+
+    .pdf-summary-label {
+      color: #333;
+    }
+
+    .pdf-summary-value {
+      font-weight: bold;
+    }
+
+    /* 備考 */
+    .pdf-notes {
+      border: 1px solid #ddd;
+      border-top: none;
+      min-height: 60px;
+    }
+
+    /* 印刷用 */
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+
+      .pdf-container {
+        box-shadow: none;
+        padding: 15mm 20mm;
+      }
+    }
+
+    /* ナビゲーション（モック用） */
+    .mock-nav {
+      max-width: 210mm;
+      margin: 0 auto 20px;
+      padding: 15px;
+      background: #333;
+      color: white;
+      border-radius: 8px;
+    }
+
+    .mock-nav h2 {
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .mock-nav p {
+      font-size: 12px;
+      color: #ccc;
+    }
+
+    .mock-nav a {
+      color: #6eb5ff;
+      text-decoration: none;
+    }
+
+    .mock-nav a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <!-- モック用ナビゲーション -->
+  <div class="mock-nav">
+    <h2>📄 請求書PDFレイアウト - モックアップ</h2>
+    <p>このページは請求書PDFのレイアウト確認用です。<a href="index.html">← モック一覧に戻る</a></p>
+  </div>
+
+  <!-- PDF本体 -->
+  <div class="pdf-container">
+    <!-- ヘッダー -->
+    <div class="pdf-header">
+      <h1 class="pdf-title">請　求　書</h1>
+      <div class="pdf-meta">
+        <div class="pdf-meta-item">
+          <strong>請求書番号:</strong> 202411-0001
+        </div>
+        <div class="pdf-meta-item">
+          <strong>請求日:</strong> 2024年11月30日
+        </div>
+      </div>
+    </div>
+
+    <!-- 発注者・受注者情報（2カラム） -->
+    <div class="pdf-two-columns">
+      <div class="pdf-column">
+        <div class="pdf-section">
+          <div class="pdf-section-title">【お支払先】</div>
+          <div class="pdf-section-content">
+            <strong>山田 太郎</strong> 様<br>
+            〒150-0001<br>
+            東京都渋谷区神宮前1-2-3<br>
+            TEL: 090-1234-5678<br>
+            適格請求書発行事業者登録番号: T1234567890123
+          </div>
+        </div>
+      </div>
+      <div class="pdf-column">
+        <div class="pdf-section">
+          <div class="pdf-section-title">【支払元】</div>
+          <div class="pdf-section-content">
+            <strong>株式会社サンプル</strong><br>
+            〒100-0001<br>
+            東京都千代田区千代田1-1-1<br>
+            TEL: 03-1234-5678
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 振込先情報 -->
+    <div class="pdf-section">
+      <div class="pdf-section-title">【振込先情報】</div>
+      <div class="bank-info">
+        <div class="bank-info-row">
+          <div class="bank-info-label">銀行名</div>
+          <div class="bank-info-value">三菱UFJ銀行</div>
+          <div class="bank-info-label">支店名</div>
+          <div class="bank-info-value">渋谷支店</div>
+        </div>
+        <div class="bank-info-row">
+          <div class="bank-info-label">口座種別</div>
+          <div class="bank-info-value">普通</div>
+          <div class="bank-info-label">口座番号</div>
+          <div class="bank-info-value">1234567</div>
+        </div>
+        <div class="bank-info-row">
+          <div class="bank-info-label">口座名義</div>
+          <div class="bank-info-value">ヤマダ タロウ</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 明細テーブル -->
+    <div class="pdf-section">
+      <div class="pdf-section-title">【明細】</div>
+      <table class="pdf-table">
+        <thead>
+          <tr>
+            <th style="width: 35%;">品名</th>
+            <th style="width: 11%;">単価</th>
+            <th style="width: 7%;">数量</th>
+            <th style="width: 10%;">報酬率<br>(%)</th>
+            <th style="width: 9%;">消費税</th>
+            <th style="width: 9%;">源泉税</th>
+            <th style="width: 11%;">金額<br>（税別）</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="text-left">Webデザイン</td>
+            <td class="text-right">¥100,000</td>
+            <td>1</td>
+            <td>100</td>
+            <td>別</td>
+            <td>対象</td>
+            <td class="text-right">¥100,000</td>
+          </tr>
+          <tr>
+            <td class="text-left">コーディング</td>
+            <td class="text-right">¥50,000</td>
+            <td>2</td>
+            <td>100</td>
+            <td>別</td>
+            <td>対象</td>
+            <td class="text-right">¥100,000</td>
+          </tr>
+          <tr>
+            <td class="text-left">交通費</td>
+            <td class="text-right">¥4,546</td>
+            <td>1</td>
+            <td>100</td>
+            <td>込</td>
+            <td>-</td>
+            <td class="text-right">¥4,546</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 集計 -->
+    <div class="pdf-summary">
+      <div class="pdf-summary-row">
+        <span class="pdf-summary-label">小計（税別）</span>
+        <span class="pdf-summary-value">¥204,546</span>
+      </div>
+      <div class="pdf-summary-row">
+        <span class="pdf-summary-label">内、源泉税対象小計（税別）</span>
+        <span class="pdf-summary-value">¥200,000</span>
+      </div>
+      <div class="pdf-summary-row">
+        <span class="pdf-summary-label">消費税（10%）</span>
+        <span class="pdf-summary-value">¥20,000</span>
+      </div>
+      <div class="pdf-summary-row">
+        <span class="pdf-summary-label">合計（税込）</span>
+        <span class="pdf-summary-value">¥224,546</span>
+      </div>
+      <div class="pdf-summary-row">
+        <span class="pdf-summary-label">源泉所得税</span>
+        <span class="pdf-summary-value">-¥20,420</span>
+      </div>
+      <div class="pdf-summary-row total">
+        <span class="pdf-summary-label">請求額（税込）</span>
+        <span class="pdf-summary-value">¥204,126</span>
+      </div>
+    </div>
+
+    <!-- 備考 -->
+    <div class="pdf-section">
+      <div class="pdf-section-title">【備考】</div>
+      <div class="pdf-section-content pdf-notes">
+        お支払い期日: 2024年12月31日<br>
+        よろしくお願いいたします。
+      </div>
+    </div>
+  </div>
+</body>
+</html>

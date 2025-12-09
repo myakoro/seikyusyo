@@ -397,7 +397,14 @@ async function createAuditLog(
 │ 〒123-4567                          │
 │ 神奈川県横浜市...                    │
 │ TEL: 090-1234-5678                  │
-│ インボイス番号: T1234567890123       │
+│ 適格請求書発行事業者登録番号: T1234567890123 │
+├─────────────────────────────────────┤
+│ 【振込先情報】                       │
+│ 銀行名: ○○銀行                      │
+│ 支店名: △△支店                      │
+│ 口座種別: 普通                       │
+│ 口座番号: 1234567                    │
+│ 口座名義: ヤマダタロウ               │
 ├─────────────────────────────────────┤
 │ 【明細】                             │
 │ ┌──┬────┬──┬──┬────┬────┐ │
@@ -507,8 +514,18 @@ const InvoicePDF: React.FC<InvoicePDFProps> = ({ invoice }) => (
         <Text>{invoice.freelancerSnapshot.address}</Text>
         <Text>TEL: {invoice.freelancerSnapshot.phone}</Text>
         {invoice.freelancerSnapshot.invoiceNumber && (
-          <Text>インボイス番号: {invoice.freelancerSnapshot.invoiceNumber}</Text>
+          <Text>適格請求書発行事業者登録番号: {invoice.freelancerSnapshot.invoiceNumber}</Text>
         )}
+      </View>
+      
+      {/* 振込先情報 */}
+      <View style={styles.section}>
+        <Text>【振込先情報】</Text>
+        <Text>銀行名: {invoice.freelancerSnapshot.bankName}</Text>
+        <Text>支店名: {invoice.freelancerSnapshot.bankBranch}</Text>
+        <Text>口座種別: {invoice.freelancerSnapshot.accountType === 'ORDINARY' ? '普通' : invoice.freelancerSnapshot.accountType === 'CURRENT' ? '当座' : '貯蓄'}</Text>
+        <Text>口座番号: {invoice.freelancerSnapshot.accountNumber}</Text>
+        <Text>口座名義: {invoice.freelancerSnapshot.accountHolder}</Text>
       </View>
       
       {/* 明細テーブル */}

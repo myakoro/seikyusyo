@@ -1,0 +1,180 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(uuid()) @db.VarChar(36)
+  email         String    @unique @db.VarChar(255)
+  username      String    @unique @db.VarChar(100)
+  passwordHash  String    @map("password_hash") @db.VarChar(255)
+  role          String    @db.VarChar(20)
+  status        String    @default("ACTIVE") @db.VarChar(20)
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  createdInvoices      Invoice[]              @relation("InvoiceCreator")
+  invoiceStatusHistory InvoiceStatusHistory[]
+  auditLogs            AuditLog[]
+  freelancer           Freelancer?
+
+  @@index([email, role, status])
+  @@map("users")
+}
+
+model Freelancer {
+  id                    String    @id @default(uuid()) @db.VarChar(36)
+  name                  String    @db.VarChar(200)
+  nameKana              String?   @map("name_kana") @db.VarChar(200)
+  postalCode            String?   @map("postal_code") @db.VarChar(10)
+  address               String?   @db.Text
+  phone                 String?   @db.VarChar(20)
+  email                 String    @unique @db.VarChar(255)
+  invoiceNumber         String?   @map("invoice_number") @db.VarChar(20)
+  bankName              String?   @map("bank_name") @db.VarChar(100)
+  bankBranch            String?   @map("bank_branch") @db.VarChar(100)
+  accountType           String?   @map("account_type") @db.VarChar(20)
+  accountNumber         String?   @map("account_number") @db.VarChar(20)
+  accountHolder         String?   @map("account_holder") @db.VarChar(200)
+  withholdingTaxDefault Boolean   @default(true) @map("withholding_tax_default")
+  status                String    @default("ACTIVE") @db.VarChar(20)
+  userId                String?   @unique @map("user_id") @db.VarChar(36)
+  createdAt             DateTime  @default(now()) @map("created_at")
+  updatedAt             DateTime  @updatedAt @map("updated_at")
+
+  user     User?     @relation(fields: [userId], references: [id])
+  products Product[]
+  invoices Invoice[]
+
+  @@index([status, email])
+  @@map("freelancers")
+}
+
+model Product {
+  id                   String   @id @default(uuid()) @db.VarChar(36)
+  freelancerId         String   @map("freelancer_id") @db.VarChar(36)
+  name                 String   @db.VarChar(200)
+  unitPrice            Decimal  @map("unit_price") @db.Decimal(12, 2)
+  taxType              String   @map("tax_type") @db.VarChar(20)
+  taxRate              Decimal  @default(10.00) @map("tax_rate") @db.Decimal(4, 2)
+  withholdingTaxTarget Boolean  @default(true) @map("withholding_tax_target")
+  status               String   @default("ACTIVE") @db.VarChar(20)
+  displayOrder         Int      @default(0) @map("display_order")
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
+
+  freelancer   Freelancer    @relation(fields: [freelancerId], references: [id])
+  invoiceItems InvoiceItem[]
+
+  @@index([freelancerId, status, displayOrder])
+  @@map("products")
+}
+
+model Invoice {
+  id                     String    @id @default(uuid()) @db.VarChar(36)
+  invoiceNumber          String?   @unique @map("invoice_number") @db.VarChar(20)
+  freelancerId           String    @map("freelancer_id") @db.VarChar(36)
+  creatorId              String    @map("creator_id") @db.VarChar(36)
+  status                 String    @default("DRAFT") @db.VarChar(20)
+  billingDate            DateTime  @map("billing_date") @db.Date
+  paymentDueDate         DateTime  @map("payment_due_date") @db.Date
+  paymentDate            DateTime? @map("payment_date") @db.Date
+  notes                  String?   @db.Text
+  companySnapshot        String?   @map("company_snapshot") @db.Text
+  freelancerSnapshot     String?   @map("freelancer_snapshot") @db.Text
+  subtotal               Decimal   @default(0) @db.Decimal(12, 2)
+  withholdingTaxSubtotal Decimal   @default(0) @map("withholding_tax_subtotal") @db.Decimal(12, 2)
+  totalWithTax           Decimal   @default(0) @map("total_with_tax") @db.Decimal(12, 2)
+  withholdingTax         Decimal   @default(0) @map("withholding_tax") @db.Decimal(12, 2)
+  invoiceAmount          Decimal   @default(0) @map("invoice_amount") @db.Decimal(12, 2)
+  createdAt              DateTime  @default(now()) @map("created_at")
+  updatedAt              DateTime  @updatedAt @map("updated_at")
+  confirmedAt            DateTime? @map("confirmed_at")
+
+  freelancer    Freelancer             @relation(fields: [freelancerId], references: [id])
+  creator       User                   @relation("InvoiceCreator", fields: [creatorId], references: [id])
+  items         InvoiceItem[]
+  statusHistory InvoiceStatusHistory[]
+  auditLogs     AuditLog[]
+
+  @@index([invoiceNumber])
+  @@index([freelancerId, status])
+  @@index([creatorId, status])
+  @@index([status, billingDate])
+  @@map("invoices")
+}
+
+model InvoiceItem {
+  id                   String   @id @default(uuid()) @db.VarChar(36)
+  invoiceId            String   @map("invoice_id") @db.VarChar(36)
+  productId            String?  @map("product_id") @db.VarChar(36)
+  lineNumber           Int      @map("line_number")
+  productName          String   @map("product_name") @db.VarChar(200)
+  unitPrice            Decimal  @map("unit_price") @db.Decimal(12, 2)
+  quantity             Int      @default(1)
+  commissionRate       Decimal  @default(100.00) @map("commission_rate") @db.Decimal(5, 2)
+  taxType              String   @map("tax_type") @db.VarChar(20)
+  taxRate              Decimal  @map("tax_rate") @db.Decimal(4, 2)
+  withholdingTaxTarget Boolean  @map("withholding_tax_target")
+  amount               Decimal  @db.Decimal(12, 2)
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
+
+  invoice Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  product Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  @@index([invoiceId, lineNumber])
+  @@map("invoice_items")
+}
+
+model InvoiceStatusHistory {
+  id         String   @id @default(uuid()) @db.VarChar(36)
+  invoiceId  String   @map("invoice_id") @db.VarChar(36)
+  fromStatus String?  @map("from_status") @db.VarChar(20)
+  toStatus   String   @map("to_status") @db.VarChar(20)
+  changedBy  String   @map("changed_by") @db.VarChar(36)
+  comment    String?  @db.Text
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  changer User    @relation(fields: [changedBy], references: [id])
+
+  @@index([invoiceId, createdAt])
+  @@map("invoice_status_history")
+}
+
+model CompanyInfo {
+  id             String   @id @default(uuid()) @db.VarChar(36)
+  companyName    String   @map("company_name") @db.VarChar(200)
+  postalCode     String?  @map("postal_code") @db.VarChar(10)
+  address        String?  @db.Text
+  phone          String?  @db.VarChar(20)
+  email          String?  @db.VarChar(255)
+  additionalInfo String?  @map("additional_info") @db.Text
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  @@map("company_info")
+}
+
+model AuditLog {
+  id        String   @id @default(uuid()) @db.VarChar(36)
+  userId    String?  @map("user_id") @db.VarChar(36)
+  invoiceId String?  @map("invoice_id") @db.VarChar(36)
+  action    String   @db.VarChar(50)
+  details   String?  @db.Text
+  ipAddress String?  @map("ip_address") @db.VarChar(45)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user    User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  invoice Invoice? @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt])
+  @@index([invoiceId, createdAt])
+  @@index([action, createdAt])
+  @@map("audit_logs")
+}

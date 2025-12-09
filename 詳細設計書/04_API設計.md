@@ -102,26 +102,6 @@ Content-Type: application/json
 
 ---
 
-### POST /api/auth/reset-password
-
-**説明**: パスワードリセット依頼（MVP: 管理者への通知のみ）
-
-**リクエスト**
-```json
-{
-  "email": "user@example.com"
-}
-```
-
-**レスポンス（成功）**
-```json
-{
-  "message": "パスワードリセット依頼を受け付けました"
-}
-```
-
----
-
 ## 4.3 請求書API
 
 ### GET /api/invoices
