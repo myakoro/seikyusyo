@@ -38,9 +38,9 @@ export default function LoginPage() {
                 setError('ユーザーIDまたはパスワードが正しくありません');
                 setDebugInfo('Error details: ' + JSON.stringify(result, null, 2));
             } else if (result?.ok) {
-                setDebugInfo('Login success! Redirecting...');
-                router.push('/');
-                router.refresh();
+                setDebugInfo('Login success! Hard Redirecting...');
+                // Force hard navigation to ensure cookies are recognized
+                window.location.href = '/';
             } else {
                 setDebugInfo('Unexpected result: ' + JSON.stringify(result, null, 2));
             }
