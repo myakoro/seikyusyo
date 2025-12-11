@@ -52,7 +52,7 @@ export async function PUT(request: Request) {
             company = await prisma.companyInfo.update({
                 where: { id: existingCompany.id },
                 data: {
-                    companyName: body.name,
+                    name: body.name,
                     postalCode: body.postalCode || null,
                     address: body.address,
                     phone: body.phoneNumber || null,
@@ -68,7 +68,7 @@ export async function PUT(request: Request) {
         } else {
             company = await prisma.companyInfo.create({
                 data: {
-                    companyName: body.name,
+                    name: body.name,
                     postalCode: body.postalCode || null,
                     address: body.address,
                     phone: body.phoneNumber || null,
