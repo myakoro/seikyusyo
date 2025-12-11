@@ -29,4 +29,17 @@ export const authConfig = {
         },
     },
     providers: [], // Configured in auth.ts
+    // ⬇️ Render/Proxy settings moved here so Middleware sees them too
+    trustHost: true,
+    cookies: {
+        sessionToken: {
+            name: `__Secure-authjs.session-token`,
+            options: {
+                httpOnly: true,
+                sameSite: 'lax',
+                path: '/',
+                secure: true,
+            },
+        },
+    },
 } satisfies NextAuthConfig;
