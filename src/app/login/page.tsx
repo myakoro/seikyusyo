@@ -15,28 +15,39 @@ export default function LoginPage() {
         rememberMe: false,
     });
     const [error, setError] = useState('');
+    const [debugInfo, setDebugInfo] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
+        setDebugInfo('');
         setIsLoading(true);
 
         try {
+            console.log('Attempting sign in with:', formData.username);
             const result = await signIn('credentials', {
                 username: formData.username,
                 password: formData.password,
                 redirect: false,
             });
 
+            console.log('Sign in result:', result);
+
             if (result?.error) {
                 setError('ユーザーIDまたはパスワードが正しくありません');
+                setDebugInfo('Error details: ' + JSON.stringify(result, null, 2));
             } else if (result?.ok) {
+                setDebugInfo('Login success! Redirecting...');
                 router.push('/');
                 router.refresh();
+            } else {
+                setDebugInfo('Unexpected result: ' + JSON.stringify(result, null, 2));
             }
-        } catch (err) {
+        } catch (err: any) {
+            console.error('Login error:', err);
             setError('ログインに失敗しました');
+            setDebugInfo('Exception: ' + (err.message || JSON.stringify(err)));
         } finally {
             setIsLoading(false);
         }
@@ -105,6 +116,11 @@ export default function LoginPage() {
                         </Link>
                     </div>
                 </form>
+                {debugInfo && (
+                    <pre className="mt-4 p-2 bg-gray-100 text-xs overflow-auto border border-gray-300 whitespace-pre-wrap break-all">
+                        {debugInfo}
+                    </pre>
+                )}
             </div>
         </div>
     );
