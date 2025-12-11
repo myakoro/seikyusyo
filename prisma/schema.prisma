@@ -149,7 +149,7 @@ model InvoiceStatusHistory {
 }
 
 // Renamed and expanded for Company Settings
-model Company {
+model CompanyInfo {
   id                 String   @id @default(uuid())
   name               String   @map("company_name")
   postalCode         String?  @map("postal_code")

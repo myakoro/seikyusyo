@@ -31,7 +31,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 username: { label: "Username", type: "text" },
                 password: { label: "Password", type: "password" },
             },
-            async authorize(credentials) {
+            // @ts-ignore
+            async authorize(credentials: any) {
                 const parsedCredentials = z
                     .object({ username: z.string().min(1), password: z.string().min(1) })
                     .safeParse(credentials);

@@ -70,7 +70,7 @@ export async function PUT(
 
         const updatedProduct = await prisma.product.update({
             where: { id },
-            data: body,
+            data: body as any,
         });
 
         await prisma.auditLog.create({

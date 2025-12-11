@@ -171,7 +171,7 @@ export async function PUT(
             await tx.auditLog.create({
                 data: {
                     userId: session.user.id,
-                    invoiceId: params.id,
+                    invoiceId: id,
                     action: "INVOICE_UPDATE",
                     details: "Updated invoice details"
                 }
@@ -179,7 +179,7 @@ export async function PUT(
         });
 
         const updatedInvoice = await prisma.invoice.findUnique({
-            where: { id: params.id },
+            where: { id },
             include: { items: true }
         });
 

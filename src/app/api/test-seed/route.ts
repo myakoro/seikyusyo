@@ -19,7 +19,7 @@ export async function GET() {
             },
         });
 
-        // Check if company info exists
+        // Check if data exists
         const count = await prisma.companyInfo.count();
         if (count === 0) {
             await prisma.companyInfo.create({

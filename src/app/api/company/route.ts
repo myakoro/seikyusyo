@@ -24,7 +24,7 @@ export async function GET(request: Request) {
 
     try {
         // Assuming single tenant/company system, fetch the first record
-        const company = await prisma.company.findFirst();
+        const company = await prisma.companyInfo.findFirst();
         return NextResponse.json(company || {}); // Return empty object if not set
     } catch (error) {
         console.error("Failed to fetch company:", error);
@@ -45,14 +45,14 @@ export async function PUT(request: Request) {
         const body = companySchema.parse(json);
 
         // Fetch existing company to update or create new if not exists
-        const existingCompany = await prisma.company.findFirst();
+        const existingCompany = await prisma.companyInfo.findFirst();
 
         let company;
         if (existingCompany) {
-            company = await prisma.company.update({
+            company = await prisma.companyInfo.update({
                 where: { id: existingCompany.id },
                 data: {
-                    name: body.name,
+                    companyName: body.name,
                     postalCode: body.postalCode || null,
                     address: body.address,
                     phone: body.phoneNumber || null,
@@ -63,12 +63,12 @@ export async function PUT(request: Request) {
                     accountType: body.accountType || "ORDINARY",
                     accountNumber: body.accountNumber || null,
                     accountHolder: body.accountHolder || null,
-                }
+                } as any
             });
         } else {
-            company = await prisma.company.create({
+            company = await prisma.companyInfo.create({
                 data: {
-                    name: body.name,
+                    companyName: body.name,
                     postalCode: body.postalCode || null,
                     address: body.address,
                     phone: body.phoneNumber || null,
@@ -79,7 +79,7 @@ export async function PUT(request: Request) {
                     accountType: body.accountType || "ORDINARY",
                     accountNumber: body.accountNumber || null,
                     accountHolder: body.accountHolder || null,
-                }
+                } as any
             });
         }
 

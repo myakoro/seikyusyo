@@ -109,7 +109,7 @@ export async function POST(request: Request) {
                     phone: body.phoneNumber || null,
                     invoiceNumber: body.taxRegistrationNumber || null,
                     status: body.status,
-                }
+                } as any
             });
 
             // Log action

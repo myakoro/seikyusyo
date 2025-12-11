@@ -93,7 +93,7 @@ export async function POST(request: Request) {
                 withholdingTaxTarget: body.withholdingTaxTarget,
                 status: body.status,
                 freelancerId: body.freelancerId || undefined,
-            }
+            } as any
         });
 
         await prisma.auditLog.create({
