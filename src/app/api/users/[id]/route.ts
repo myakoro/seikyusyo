@@ -14,15 +14,16 @@ const updateUserSchema = z.object({
 
 export async function PUT(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     const session = await auth();
     if (!session) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const { id } = await params;
     // Allow users to update their own profile (e.g. password) or COMPANY admin to update anyone
-    if (session.user.role !== "COMPANY" && session.user.id !== params.id) {
+    if (session.user.role !== "COMPANY" && session.user.id !== id) {
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
@@ -45,7 +46,7 @@ export async function PUT(
         }
 
         const updatedUser = await prisma.user.update({
-            where: { id: params.id },
+            where: { id },
             data: data,
             select: {
                 id: true,
@@ -75,7 +76,7 @@ export async function PUT(
 
 export async function DELETE(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     const session = await auth();
     if (!session) {
@@ -86,14 +87,15 @@ export async function DELETE(
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
+    const { id } = await params;
     // Prevent deleting self
-    if (session.user.id === params.id) {
+    if (session.user.id === id) {
         return NextResponse.json({ error: "Cannot delete yourself" }, { status: 400 });
     }
 
     try {
         await prisma.user.delete({
-            where: { id: params.id },
+            where: { id },
         });
         return NextResponse.json({ message: "User deleted successfully" });
     } catch (error) {

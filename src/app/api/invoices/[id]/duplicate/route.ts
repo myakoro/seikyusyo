@@ -5,7 +5,7 @@ import { addMonths, startOfMonth, endOfMonth } from "date-fns";
 
 export async function POST(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     const session = await auth();
     if (!session) {
@@ -17,8 +17,9 @@ export async function POST(
     }
 
     try {
+        const { id } = await params;
         const originalInvoice = await prisma.invoice.findUnique({
-            where: { id: params.id },
+            where: { id },
             include: {
                 items: true
             }

@@ -7,7 +7,7 @@ import React from "react";
 
 export async function GET(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     const session = await auth();
     if (!session) {
@@ -15,8 +15,9 @@ export async function GET(
     }
 
     try {
+        const { id } = await params;
         const invoice = await prisma.invoice.findUnique({
-            where: { id: params.id },
+            where: { id },
             include: {
                 items: {
                     orderBy: { lineNumber: 'asc' }
@@ -42,7 +43,7 @@ export async function GET(
         }
 
         // Render PDF
-        const stream = await renderToStream(<InvoicePDF invoice={ invoice } />);
+        const stream = await renderToStream(<InvoicePDF invoice={invoice} />);
 
         // Return stream response
         // Next.js Response supports standard Web Streams
