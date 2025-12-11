@@ -10,33 +10,30 @@ async function main() {
 
     console.log('--- Starting Backend Verification ---');
 
-    // Skip step 1 if company model is missing
-    if ('company' in prisma) {
+    // Verify Company Settings
+    if ('companyInfo' in prisma) {
         console.log('\n[Test 1] Company Settings');
         // @ts-ignore
-        const existingCompany = await prisma.company.findFirst();
-        if (existingCompany) {
-            // @ts-ignore
-            await prisma.company.update({
-                where: { id: existingCompany.id },
-                data: { name: "Updated Company Name Check" }
-            });
-            console.log('✅ Company updated');
-        } else {
-            // @ts-ignore
-            await prisma.company.create({
-                data: { name: "Created Company Name Check" }
-            });
-            console.log('✅ Company created');
-        }
-    } else if ('companyInfo' in prisma) {
-        console.log('\n[Test 1] Company Settings (using companyInfo)');
-        // @ts-ignore
         const existingCompany = await prisma.companyInfo.findFirst();
-        // ... logic
-        console.log('✅ CompanyInfo accessed');
+
+        if (existingCompany) {
+            console.log('Found existing company, updating...');
+            // @ts-ignore
+            await prisma.companyInfo.update({
+                where: { id: existingCompany.id },
+                data: { companyName: "Updated Company Name Check" }
+            });
+            console.log('✅ Company updated successfully');
+        } else {
+            console.log('No company found, creating...');
+            // @ts-ignore
+            await prisma.companyInfo.create({
+                data: { companyName: "Created Company Name Check" }
+            });
+            console.log('✅ Company created successfully');
+        }
     } else {
-        console.error('❌ Company model not found in Prisma Client');
+        console.error('❌ CompanyInfo model not found in Prisma Client. Available keys:', Object.keys(prisma));
     }
 
     // 2. Verify Freelancer Creation (SC-09)

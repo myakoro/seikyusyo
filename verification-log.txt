@@ -1,0 +1,25 @@
+(node:10060) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/takuy/Desktop/%E8%AB%8B%E6%B1%82%E6%9B%B8%E7%99%BA%E8%A1%8C%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0/verification-script.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\takuy\Desktop\請求書発行システム\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+--- Debug Info ---
+Available models: [
+  '$extends',
+  'user',
+  'freelancer',
+  'product',
+  'invoice',
+  'invoiceItem',
+  'invoiceStatusHistory',
+  'companyInfo',
+  'auditLog',
+  '$parent'
+]
+--- Starting Backend Verification ---
+
+[Test 1] Company Settings
+Found existing company, updating...
+✅ Company updated successfully
+
+[Test 2] Freelancer Management
+✅ Freelancer retrieved: 7266b904-09a6-456f-83cb-9a4f202cacb4

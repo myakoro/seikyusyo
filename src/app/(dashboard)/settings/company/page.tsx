@@ -43,7 +43,7 @@ export default function CompanySettingsPage() {
     useEffect(() => {
         const fetchCompany = async () => {
             try {
-                const response = await fetch('/api/company');
+                const response = await fetch('/api/company-settings');
                 if (response.ok) {
                     const data = await response.json();
                     // Reset form with fetched data
@@ -74,17 +74,18 @@ export default function CompanySettingsPage() {
     const onSubmit = async (data: FormData) => {
         setIsSaving(true);
         try {
-            const response = await fetch('/api/company', {
+            const res = await fetch('/api/company-settings', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data),
             });
 
-            if (response.ok) {
+            if (res.ok) {
                 alert('会社情報を更新しました');
             } else {
-                const res = await response.json();
-                alert(`Error: ${res.error}\nMessage: ${res.message}\n${res.stack || ''}`);
+                const errorData = await res.json();
+                console.error('Save failed:', errorData);
+                alert(`エラーが発生しました: ${errorData.message || 'Unknown error'}\n${errorData.stack || ''}`);
             }
         } catch (error) {
             alert('エラーが発生しました');
