@@ -151,7 +151,7 @@ model InvoiceStatusHistory {
 // Renamed and expanded for Company Settings
 model CompanyInfo {
   id                 String   @id @default(uuid())
-  name               String   @map("company_name")
+  companyName        String   @map("company_name")
   postalCode         String?  @map("postal_code")
   address            String?
   phone              String? // matches API phoneNumber? API uses phoneNumber, schema uses phone. 

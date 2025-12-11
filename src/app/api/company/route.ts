@@ -52,7 +52,7 @@ export async function PUT(request: Request) {
             company = await prisma.companyInfo.update({
                 where: { id: existingCompany.id },
                 data: {
-                    name: body.name,
+                    companyName: body.name,
                     postalCode: body.postalCode || null,
                     address: body.address,
                     phone: body.phoneNumber || null,
@@ -63,12 +63,12 @@ export async function PUT(request: Request) {
                     accountType: body.accountType || "ORDINARY",
                     accountNumber: body.accountNumber || null,
                     accountHolder: body.accountHolder || null,
-                } as any
+                }
             });
         } else {
             company = await prisma.companyInfo.create({
                 data: {
-                    name: body.name,
+                    companyName: body.name,
                     postalCode: body.postalCode || null,
                     address: body.address,
                     phone: body.phoneNumber || null,
@@ -79,7 +79,7 @@ export async function PUT(request: Request) {
                     accountType: body.accountType || "ORDINARY",
                     accountNumber: body.accountNumber || null,
                     accountHolder: body.accountHolder || null,
-                } as any
+                }
             });
         }
 

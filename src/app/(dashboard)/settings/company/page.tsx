@@ -84,7 +84,7 @@ export default function CompanySettingsPage() {
                 alert('会社情報を更新しました');
             } else {
                 const res = await response.json();
-                alert(res.error || '更新に失敗しました');
+                alert(`Error: ${res.error}\nMessage: ${res.message}\n${res.stack || ''}`);
             }
         } catch (error) {
             alert('エラーが発生しました');
