@@ -58,7 +58,7 @@ export async function PUT(request: Request) {
                     phone: body.phoneNumber || null,
                     email: body.email || null,
                     // @ts-ignore
-                    registrationNumber: body.registrationNumber || null,
+                    // registrationNumber: body.registrationNumber || null,
                     bankName: body.bankName || null,
                     bankBranch: body.bankBranch || null,
                     accountType: body.accountType || "ORDINARY",
@@ -75,7 +75,7 @@ export async function PUT(request: Request) {
                     phone: body.phoneNumber || null,
                     email: body.email || null,
                     // @ts-ignore
-                    registrationNumber: body.registrationNumber || null,
+                    // registrationNumber: body.registrationNumber || null,
                     bankName: body.bankName || null,
                     bankBranch: body.bankBranch || null,
                     accountType: body.accountType || "ORDINARY",
