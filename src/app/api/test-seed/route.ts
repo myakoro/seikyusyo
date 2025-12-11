@@ -24,7 +24,7 @@ export async function GET() {
         if (count === 0) {
             await prisma.companyInfo.create({
                 data: {
-                    companyName: "Test Company Inc.",
+                    name: "Test Company Inc.",
                     email: "info@testcompany.com",
                     phone: "03-1234-5678",
                     address: "Tokyo, Japan",
