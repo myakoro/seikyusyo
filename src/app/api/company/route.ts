@@ -98,6 +98,10 @@ export async function PUT(request: Request) {
             return NextResponse.json({ error: "Validation Error", details: (error as any).errors }, { status: 400 });
         }
         console.error("Failed to update company:", error);
-        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+        return NextResponse.json({
+            error: "Internal Server Error",
+            message: (error as Error).message,
+            stack: (error as Error).stack
+        }, { status: 500 });
     }
 }
