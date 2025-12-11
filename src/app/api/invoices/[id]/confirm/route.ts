@@ -5,7 +5,7 @@ import { format } from "date-fns";
 
 export async function POST(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     const session = await auth();
     if (!session) {
@@ -18,7 +18,8 @@ export async function POST(
     }
 
     try {
-        const invoiceId = params.id;
+        const { id } = await params;
+        const invoiceId = id;
 
         // Use interactive transaction
         const result = await prisma.$transaction(async (tx) => {
