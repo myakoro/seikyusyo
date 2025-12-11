@@ -103,7 +103,8 @@ export async function PUT(request: Request) {
         return NextResponse.json({
             error: "Internal Server Error",
             message: (error as Error).message,
-            stack: (error as Error).stack
+            stack: (error as Error).stack,
+            apiVersion: "v2-no-reg-commented-out"
         }, { status: 500 });
     }
 }
