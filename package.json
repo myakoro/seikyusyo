@@ -5,19 +5,20 @@
   "scripts": {
     "dev": "next dev",
     "build": "npx prisma generate && next build",
+    "postinstall": "prisma generate",
     "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
     "@hookform/resolvers": "^5.2.2",
-    "@prisma/client": "latest",
+    "@prisma/client": "5.22.0",
     "@react-pdf/renderer": "^4.3.1",
     "bcryptjs": "^3.0.3",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "next-auth": "^5.0.0-beta.30",
-    "prisma": "latest",
+    "prisma": "5.22.0",
     "react-hook-form": "^7.68.0",
     "react-hot-toast": "^2.6.0",
     "tailwind-merge": "^3.4.0",
