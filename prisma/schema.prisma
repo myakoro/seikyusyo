@@ -148,26 +148,23 @@ model InvoiceStatusHistory {
   @@map("invoice_status_history")
 }
 
-// Renamed and expanded for Company Settings
+// Company Settings Model
 model CompanyInfo {
-  id                 String   @id @default(uuid())
-  companyName        String   @map("company_name")
-  postalCode         String?  @map("postal_code")
-  address            String?
-  phone              String? // matches API phoneNumber? API uses phoneNumber, schema uses phone. 
-  email              String?
-  registrationNumber String?  @map("registration_number")
-  
-  // Bank details
-  bankName           String?  @map("bank_name")
-  bankBranch         String?  @map("bank_branch")
-  accountType        String?  @map("account_type")
-  accountNumber      String?  @map("account_number")
-  accountHolder      String?  @map("account_holder")
-  
-  additionalInfo     String?  @map("additional_info")
-  createdAt          DateTime @default(now()) @map("created_at")
-  updatedAt          DateTime @updatedAt @map("updated_at")
+  id String @id @default(uuid())
+  companyName String @map("company_name")
+  postalCode String? @map("postal_code")
+  address String?
+  phone String?
+  email String?
+  registrationNumber String? @map("registration_number")
+  bankName String? @map("bank_name")
+  bankBranch String? @map("bank_branch")
+  accountType String? @map("account_type")
+  accountNumber String? @map("account_number")
+  accountHolder String? @map("account_holder")
+  additionalInfo String? @map("additional_info")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("company_info")
 }
