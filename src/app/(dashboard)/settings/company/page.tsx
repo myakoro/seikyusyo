@@ -49,10 +49,10 @@ export default function CompanySettingsPage() {
                     // Reset form with fetched data
                     // Handle nulls by defaulting to empty strings for inputs
                     reset({
-                        name: data.name || '',
+                        name: data.companyName || '',
                         postalCode: data.postalCode || '',
                         address: data.address || '',
-                        phoneNumber: data.phoneNumber || '',
+                        phoneNumber: data.phone || '',
                         email: data.email || '',
                         registrationNumber: data.registrationNumber || '',
                         bankName: data.bankName || '',
@@ -110,7 +110,7 @@ export default function CompanySettingsPage() {
                             {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
                         </div>
 
-                        <div>
+                        <div className="hidden">
                             <label className="block text-sm font-medium mb-1">インボイス登録番号</label>
                             <Input {...register('registrationNumber')} placeholder="T1234567890123" />
                             {errors.registrationNumber && <p className="text-red-500 text-sm">{errors.registrationNumber.message}</p>}
